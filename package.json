@@ -1,0 +1,23 @@
+{
+  "name": "brandsync-mcp",
+  "version": "0.1.0",
+  "description": "Brandsync MCP server — exposes design tokens, component specs, and guidelines to AI tools",
+  "type": "module",
+  "bin": {
+    "brandsync-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "brandsync-tokens": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
