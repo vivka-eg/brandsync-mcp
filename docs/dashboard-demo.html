@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Brandsync Design System</title>
+  <style>
+    /* ── Tokens ───────────────────────────────────────────── */
+    :root {
+      --bs-button-primary-default: #0062c1;
+      --bs-button-primary-hover:   #0051a2;
+      --bs-button-neutral-default: #4d535f;
+
+      --bs-color-surface-base:      #ffffff;
+      --bs-color-surface-raised:    #ffffff;
+      --bs-color-surface-container: #eff0f8;
+
+      --bs-color-text-default:   #000000;
+      --bs-color-text-secondary: #5d6472;
+      --bs-color-text-action:    #0062c1;
+
+      --bs-color-border-neutral-container: #c2c7d3;
+      --bs-color-primary-default:          #0062c1;
+
+      --bs-color-success-container: #c5ebd5;
+      --bs-color-error-container:   #ffdad7;
+      --bs-color-warning-container: #ffdea1;
+      --bs-color-text-success:      #1b5d43;
+      --bs-color-text-error:        #982a2a;
+      --bs-color-text-warning:      #6b4d00;
+
+      --bs-badge-bg-success: #11714e;
+      --bs-badge-bg-error:   #b92f31;
+      --bs-badge-bg-neutral: #4d535f;
+
+      --bs-spacing-100: 8px;
+      --bs-spacing-150: 12px;
+      --bs-spacing-200: 16px;
+      --bs-spacing-300: 24px;
+      --bs-spacing-400: 32px;
+      --bs-spacing-500: 40px;
+
+      --bs-border-radius-100: 4px;
+      --bs-border-radius-150: 6px;
+      --bs-border-radius-200: 8px;
+      --bs-border-radius-300: 12px;
+      --bs-border-radius-full: 9999px;
+
+      --opacity-hover:    0.8;
+      --opacity-disabled: 0.5;
+
+      /* Navigation drawer tokens */
+      --grid-sidebar-width: 256px;
+      --margin-with-navigation-drawer: 24px;
+      --navigation-header-gap: 40px;
+    }
+
+    /* ── Reset ────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bs-color-surface-container);
+      color: var(--bs-color-text-default);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Navigation Drawer ────────────────────────────────── */
+    /* Type: Expanded — shows logo, labels + icons, dividers, grouped sections */
+    /* Rules: clear grouping, descriptive labels, highlight current location,  */
+    /*        recognizable icons, adapt for screen sizes                        */
+    .nav-drawer {
+      width: var(--grid-sidebar-width);   /* 256px from token */
+      min-height: 100vh;
+      background: var(--bs-color-surface-base);
+      border-right: 1px solid var(--bs-color-border-neutral-container);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    /* Logo — navigation-header-logo: true */
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: var(--bs-spacing-150);
+      padding: var(--bs-spacing-300) var(--bs-spacing-300);
+      border-bottom: 1px solid var(--bs-color-border-neutral-container);
+    }
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--bs-color-primary-default);
+      border-radius: var(--bs-border-radius-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .nav-logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--bs-color-text-default);
+    }
+
+    /* Nav body — scrollable */
+    .nav-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--bs-spacing-200) 0;
+    }
+
+    /* Divider — separates content sections */
+    .nav-divider {
+      height: 1px;
+      background: var(--bs-color-border-neutral-container);
+      margin: var(--bs-spacing-200) var(--bs-spacing-200);
+    }
+
+    /* Section label — grouping */
+    .nav-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bs-color-text-secondary);
+      padding: var(--bs-spacing-200) var(--bs-spacing-300) var(--bs-spacing-100);
+    }
+
+    /* Nav item — icon + label (Expanded type) */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--bs-spacing-150);
+      padding: 10px var(--bs-spacing-200);
+      margin: 2px var(--bs-spacing-150);
+      color: var(--bs-color-text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      border-radius: var(--bs-border-radius-150);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-item:hover {
+      background: var(--bs-color-surface-container);
+      color: var(--bs-color-text-default);
+    }
+    /* Active: clearly highlight current location */
+    .nav-item.active {
+      background: var(--bs-color-primary-default);
+      color: #ffffff;
+      font-weight: 500;
+    }
+    .nav-item.active .nav-icon { opacity: 1; }
+    .nav-icon { width: 16px; height: 16px; opacity: 0.65; flex-shrink: 0; }
+
+    /* Bottom section — user profile */
+    .nav-footer {
+      padding: var(--bs-spacing-200) var(--bs-spacing-200);
+      border-top: 1px solid var(--bs-color-border-neutral-container);
+    }
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: var(--bs-spacing-150);
+      padding: var(--bs-spacing-150) var(--bs-spacing-150);
+      border-radius: var(--bs-border-radius-150);
+      cursor: pointer;
+    }
+    .nav-user:hover { background: var(--bs-color-surface-container); }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--bs-border-radius-full);
+      background: var(--bs-color-surface-container);
+      border: 1px solid var(--bs-color-border-neutral-container);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--bs-color-text-secondary);
+      flex-shrink: 0;
+    }
+    .nav-user-info { flex: 1; min-width: 0; }
+    .nav-user-name { font-size: 13px; font-weight: 500; color: var(--bs-color-text-default); }
+    .nav-user-role { font-size: 11px; color: var(--bs-color-text-secondary); }
+
+    /* ── Main layout ──────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .topbar {
+      background: var(--bs-color-surface-base);
+      border-bottom: 1px solid var(--bs-color-border-neutral-container);
+      padding: var(--bs-spacing-200) var(--bs-spacing-400);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--bs-spacing-300);
+    }
+    .page-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--bs-spacing-200);
+    }
+
+    /* ── Input field ──────────────────────────────────────── */
+    /* Rule: Placeholders aren't labels, mark required fields */
+    .input-field {
+      display: flex;
+      align-items: center;
+      gap: var(--bs-spacing-100);
+      border: 1px solid var(--bs-color-border-neutral-container);
+      border-radius: var(--bs-border-radius-150);
+      padding: 8px var(--bs-spacing-150);
+      background: var(--bs-color-surface-base);
+      font-size: 14px;
+      color: var(--bs-color-text-secondary);
+      width: 220px;
+    }
+    .input-field input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--bs-color-text-default);
+      width: 100%;
+    }
+    .input-field input::placeholder { color: var(--bs-color-text-secondary); }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    /* Rules: one primary per layout, sentence case, max 3 words, max 1 icon */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--bs-spacing-100);
+      padding: 8px var(--bs-spacing-200);
+      border-radius: var(--bs-border-radius-150);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--bs-button-primary-default);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--bs-button-primary-hover); }
+    .btn-neutral {
+      background: transparent;
+      color: var(--bs-button-neutral-default);
+      border: 1px solid var(--bs-color-border-neutral-container);
+    }
+    .btn-neutral:hover { background: var(--bs-color-surface-container); }
+
+    /* ── Content area ─────────────────────────────────────── */
+    .content {
+      flex: 1;
+      padding: var(--bs-spacing-400);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--bs-spacing-400);
+    }
+
+    /* ── Tabs ─────────────────────────────────────────────── */
+    /* Rule: use for related content, label clearly */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--bs-color-border-neutral-container);
+    }
+    .tab {
+      padding: var(--bs-spacing-150) var(--bs-spacing-300);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--bs-color-text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .tab.active {
+      color: var(--bs-color-text-action);
+      border-bottom-color: var(--bs-color-primary-default);
+    }
+    .tab:hover:not(.active) { color: var(--bs-color-text-default); }
+
+    /* ── Stat cards ───────────────────────────────────────── */
+    /* Rule: keep content concise, consistent spacing */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--bs-spacing-300);
+    }
+    .card {
+      background: var(--bs-color-surface-base);
+      border: 1px solid var(--bs-color-border-neutral-container);
+      border-radius: var(--bs-border-radius-200);
+      padding: var(--bs-spacing-300);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--bs-color-text-secondary);
+      margin-bottom: var(--bs-spacing-100);
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: var(--bs-spacing-100);
+    }
+    .stat-change {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-change.up   { color: var(--bs-color-text-success); }
+    .stat-change.down { color: var(--bs-color-text-error); }
+
+    /* ── Badge ────────────────────────────────────────────── */
+    /* Rules: consistent placement, size appropriate to context */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--bs-border-radius-full);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-success { background: var(--bs-color-success-container); color: var(--bs-color-text-success); }
+    .badge-error   { background: var(--bs-color-error-container);   color: var(--bs-color-text-error); }
+    .badge-warning { background: var(--bs-color-warning-container); color: var(--bs-color-text-warning); }
+    .badge-neutral { background: var(--bs-color-surface-container); color: var(--bs-color-text-secondary); }
+
+    /* ── Table card ───────────────────────────────────────── */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--bs-spacing-300);
+    }
+    .card-title { font-size: 15px; font-weight: 600; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead th {
+      text-align: left;
+      padding: var(--bs-spacing-150) var(--bs-spacing-200);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--bs-color-text-secondary);
+      border-bottom: 1px solid var(--bs-color-border-neutral-container);
+    }
+    tbody td {
+      padding: var(--bs-spacing-150) var(--bs-spacing-200);
+      border-bottom: 1px solid var(--bs-color-surface-container);
+      color: var(--bs-color-text-default);
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--bs-color-surface-container); }
+
+    /* ── Bottom grid ──────────────────────────────────────── */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--bs-spacing-300);
+    }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--bs-spacing-200);
+      padding: var(--bs-spacing-200) 0;
+      border-bottom: 1px solid var(--bs-color-surface-container);
+      font-size: 14px;
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bs-color-primary-default);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .activity-time { font-size: 12px; color: var(--bs-color-text-secondary); margin-top: 2px; }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .bottom-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-drawer { display: none; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stat-grid { grid-template-columns: 1fr; }
+      .content { padding: var(--bs-spacing-200); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Drawer: Expanded type -->
+  <!-- Logo at top, grouped sections with dividers, icon+label items, active state highlighted -->
+  <nav class="nav-drawer">
+
+    <!-- Logo — navigation-header-logo: true -->
+    <div class="nav-logo">
+      <div class="nav-logo-mark">B</div>
+      <span class="nav-logo-text">Brandsync</span>
+    </div>
+
+    <div class="nav-body">
+
+      <!-- Page Name items — main navigation -->
+      <span class="nav-section-label">Main</span>
+      <a class="nav-item active" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Overview
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v2H2zm1 4h10v6H3zm2 2v2h6V9z"/></svg>
+        Orders
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+        Customers
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10l1 3H2L3 2zm0 4h10v7a1 1 0 01-1 1H4a1 1 0 01-1-1V6z"/></svg>
+        Products
+      </a>
+
+      <!-- Divider — visual separation between groups -->
+      <div class="nav-divider"></div>
+
+      <span class="nav-section-label">Reports</span>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 12l3-4 3 2 3-5 3 3v4H2z"/></svg>
+        Analytics
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm1 3h6v1H5zm0 3h6v1H5zm0 3h4v1H5z"/></svg>
+        Exports
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <span class="nav-section-label">Settings</span>
+      <a class="nav-item" href="#">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 5a3 3 0 100 6A3 3 0 008 5zM1 8a7 7 0 1114 0A7 7 0 011 8z"/></svg>
+        Preferences
+      </a>
+
+    </div>
+
+    <!-- Footer — user profile (avatar component) -->
+    <div class="nav-footer">
+      <div class="nav-user">
+        <div class="nav-avatar">VK</div>
+        <div class="nav-user-info">
+          <div class="nav-user-name">Vivka</div>
+          <div class="nav-user-role">Admin</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;flex-shrink:0"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+    </div>
+
+  </nav>
+
+  <div class="main">
+
+    <!-- Top bar: one primary button per layout rule -->
+    <header class="topbar">
+      <h1 class="page-title">Overview</h1>
+      <div class="topbar-actions">
+        <!-- Input: placeholder is not the label — label is implied by context here (search) -->
+        <div class="input-field">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+          <input type="text" placeholder="Search orders…" />
+        </div>
+        <!-- Neutral button: secondary action, no competition with primary -->
+        <button class="btn btn-neutral">Export</button>
+        <!-- Primary button: one per layout, sentence case, max 3 words -->
+        <button class="btn btn-primary">New order</button>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Tabs: related content, clear text labels -->
+      <div class="tabs">
+        <div class="tab active">All orders</div>
+        <div class="tab">Pending</div>
+        <div class="tab">Fulfilled</div>
+        <div class="tab">Cancelled</div>
+      </div>
+
+      <!-- Stat cards: concise content, consistent spacing -->
+      <div class="stat-grid">
+        <div class="card">
+          <div class="stat-label">Total revenue</div>
+          <div class="stat-value">$84,291</div>
+          <div class="stat-change up">↑ 12.4% vs last month</div>
+        </div>
+        <div class="card">
+          <div class="stat-label">Orders</div>
+          <div class="stat-value">1,429</div>
+          <div class="stat-change up">↑ 8.1% vs last month</div>
+        </div>
+        <div class="card">
+          <div class="stat-label">Avg order value</div>
+          <div class="stat-value">$59.00</div>
+          <div class="stat-change down">↓ 2.3% vs last month</div>
+        </div>
+        <div class="card">
+          <div class="stat-label">Return rate</div>
+          <div class="stat-value">3.2%</div>
+          <div class="stat-change down">↓ 0.4% vs last month</div>
+        </div>
+      </div>
+
+      <!-- Orders table: don't use primary buttons in repeating rows -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Recent orders</span>
+          <!-- Neutral button as secondary action — correct combination with the primary in topbar -->
+          <button class="btn btn-neutral">View all</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#10482</td>
+              <td>Sarah Chen</td>
+              <td>2 Apr 2026</td>
+              <td>$124.00</td>
+              <td><span class="badge badge-success">Fulfilled</span></td>
+              <!-- Subtle/outlined for row actions, not primary — design rule -->
+              <td><button class="btn btn-neutral" style="padding:4px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>#10481</td>
+              <td>Marco Rossi</td>
+              <td>2 Apr 2026</td>
+              <td>$58.50</td>
+              <td><span class="badge badge-warning">Pending</span></td>
+              <td><button class="btn btn-neutral" style="padding:4px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>#10480</td>
+              <td>Amara Osei</td>
+              <td>1 Apr 2026</td>
+              <td>$210.00</td>
+              <td><span class="badge badge-success">Fulfilled</span></td>
+              <td><button class="btn btn-neutral" style="padding:4px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>#10479</td>
+              <td>Li Wei</td>
+              <td>1 Apr 2026</td>
+              <td>$34.00</td>
+              <td><span class="badge badge-error">Cancelled</span></td>
+              <td><button class="btn btn-neutral" style="padding:4px 12px;font-size:12px;">View</button></td>
+            </tr>
+            <tr>
+              <td>#10478</td>
+              <td>Priya Nair</td>
+              <td>31 Mar 2026</td>
+              <td>$89.00</td>
+              <td><span class="badge badge-success">Fulfilled</span></td>
+              <td><button class="btn btn-neutral" style="padding:4px 12px;font-size:12px;">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bottom grid -->
+      <div class="bottom-grid">
+
+        <!-- Top products card -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Top products</span>
+            <span class="badge badge-neutral">This month</span>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Product</th><th>Sales</th><th>Revenue</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Pro plan</td><td>312</td><td>$31,200</td></tr>
+              <tr><td>Starter kit</td><td>204</td><td>$10,200</td></tr>
+              <tr><td>Add-on pack</td><td>189</td><td>$5,670</td></tr>
+              <tr><td>Enterprise</td><td>24</td><td>$19,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Activity feed -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Recent activity</span>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <div>Order #10482 fulfilled by warehouse</div>
+              <div class="activity-time">2 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background: var(--bs-color-warning-default)"></div>
+            <div>
+              <div>Payment pending for order #10481</div>
+              <div class="activity-time">18 minutes ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background: var(--bs-color-error-default)"></div>
+            <div>
+              <div>Order #10479 cancelled by customer</div>
+              <div class="activity-time">1 hour ago</div>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <div>New customer registered: Priya Nair</div>
+              <div class="activity-time">3 hours ago</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
