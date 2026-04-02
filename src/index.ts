@@ -1,331 +1,231 @@
-#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import fs from "fs/promises";
-import path from "path";
+import * as fs from "fs";
+import * as path from "path";
 import { fileURLToPath } from "url";
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Resolve the path to a file inside the brandsync-tokens npm package.
- *  Uses import.meta.resolve so it follows Node's standard ESM resolution —
- *  i.e. it reads from whatever version `npm install brandsync-tokens` put in node_modules. */
-async function resolveTokensFile(filename: string): Promise<string> {
-  // Try direct resolution first (works when package exports the file)
-  try {
-    return fileURLToPath(await import.meta.resolve(`brandsync-tokens/${filename}`));
-  } catch {
-    // Fallback: resolve via package root
-    const pkgUrl = await import.meta.resolve("brandsync-tokens/package.json");
-    return path.join(path.dirname(fileURLToPath(pkgUrl)), filename);
-  }
-}
-
-/** Parse a CSS file and return all custom properties (--bs-* lines). */
-function parseCssTokens(
-  css: string,
-  prefix?: string
-): Record<string, string> {
-  const result: Record<string, string> = {};
-  // Match lines like:  --bs-color-primary-default: #1a2b3c;
-  const re = /^\s*(--bs-[a-z0-9-]+)\s*:\s*(.+?);?\s*$/gm;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(css)) !== null) {
-    const [, name, value] = m;
-    if (!prefix || name.startsWith(`--bs-${prefix}`)) {
-      result[name] = value.trim();
-    }
-  }
-  return result;
-}
-
-/** Walk a directory recursively and collect files matching a glob-like predicate. */
-async function walkDir(
-  dir: string,
-  predicate: (file: string) => boolean
-): Promise<string[]> {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const results: string[] = [];
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      results.push(...(await walkDir(full, predicate)));
-    } else if (predicate(full)) {
-      results.push(full);
-    }
-  }
-  return results;
-}
-
-// ---------------------------------------------------------------------------
-// Server
-// ---------------------------------------------------------------------------
+// ─── Server ──────────────────────────────────────────────────────────────────
 
 const server = new McpServer({
-  name: "brandsync",
+  name: "brandsync-mcp",
   version: "0.1.0",
 });
 
-// ------------------------------------------------------------------
-// Tool: get_tokens
-// ------------------------------------------------------------------
-server.tool(
-  "get_tokens",
-  "Read live design tokens from the brandsync-tokens npm package. Optionally filter by a prefix segment (e.g. 'color', 'spacing', 'typography').",
-  {
-    prefix: z
-      .string()
-      .optional()
-      .describe(
-        "Optional token category prefix without --bs- (e.g. 'color', 'spacing'). Omit to return all tokens."
-      ),
-  },
-  async ({ prefix }) => {
-    let css: string;
-    try {
-      const tokenFile = await resolveTokensFile("tokens.css");
-      css = await fs.readFile(tokenFile, "utf-8");
-    } catch {
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: "Could not read tokens.css from brandsync-tokens. Make sure the package is installed.",
-          },
-        ],
-      };
-    }
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-    const tokens = parseCssTokens(css, prefix);
-    const count = Object.keys(tokens).length;
-
-    if (count === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: prefix
-              ? `No tokens found matching prefix "--bs-${prefix}".`
-              : "No tokens found in tokens.css.",
-          },
-        ],
-      };
-    }
-
-    const lines = Object.entries(tokens)
-      .map(([name, value]) => `${name}: ${value};`)
-      .join("\n");
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Found ${count} token(s)${prefix ? ` for prefix "${prefix}"` : ""}:\n\n${lines}`,
-        },
-      ],
-    };
-  }
-);
-
-// ------------------------------------------------------------------
-// Tool: get_component_spec
-// ------------------------------------------------------------------
-server.tool(
-  "get_component_spec",
-  "Read the design spec JSON for a Brandsync component. Specs live at src/components/{Name}/{Name}.spec.json.",
-  {
-    name: z
-      .string()
-      .describe(
-        "Component name in PascalCase (e.g. 'Button', 'InputField'). Case-insensitive."
-      ),
-  },
-  async ({ name }) => {
-    // Support both PascalCase and lowercase input
-    const pascal = name.charAt(0).toUpperCase() + name.slice(1);
-    const specPath = path.join(
-      process.cwd(),
-      "src",
-      "components",
-      pascal,
-      `${pascal}.spec.json`
-    );
-
-    let raw: string;
-    try {
-      raw = await fs.readFile(specPath, "utf-8");
-    } catch {
-      // Try a case-insensitive search in the components directory
-      const componentsDir = path.join(process.cwd(), "src", "components");
-      try {
-        const entries = await fs.readdir(componentsDir, {
-          withFileTypes: true,
-        });
-        const match = entries.find(
-          (e) => e.isDirectory() && e.name.toLowerCase() === pascal.toLowerCase()
-        );
-        if (match) {
-          const alt = path.join(
-            componentsDir,
-            match.name,
-            `${match.name}.spec.json`
-          );
-          raw = await fs.readFile(alt, "utf-8");
-        } else {
-          return {
-            isError: true,
-            content: [
-              {
-                type: "text",
-                text: `No spec found for component "${pascal}". Expected at src/components/${pascal}/${pascal}.spec.json`,
-              },
-            ],
-          };
-        }
-      } catch {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `No spec found for component "${pascal}". Expected at src/components/${pascal}/${pascal}.spec.json`,
-            },
-          ],
-        };
-      }
-    }
-
-    // Validate it's valid JSON before returning
-    try {
-      JSON.parse(raw);
-    } catch {
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: `Spec file for "${pascal}" exists but contains invalid JSON.`,
-          },
-        ],
-      };
-    }
-
-    return {
-      content: [{ type: "text", text: raw }],
-    };
-  }
-);
-
-// ------------------------------------------------------------------
-// Tool: search_guidelines
-// ------------------------------------------------------------------
-server.tool(
-  "search_guidelines",
-  "Search Brandsync guideline markdown files by keyword. Returns matching excerpts with file names.",
-  {
-    keyword: z
-      .string()
-      .describe("Search term (case-insensitive). Supports plain text."),
-    max_results: z
-      .number()
-      .int()
-      .min(1)
-      .max(20)
-      .optional()
-      .default(5)
-      .describe("Maximum number of matching excerpts to return (default 5)."),
-  },
-  async ({ keyword, max_results }) => {
-    const guidelinesDir = path.join(process.cwd(), "src", "guidelines");
-
-    let mdFiles: string[];
-    try {
-      mdFiles = await walkDir(
-        guidelinesDir,
-        (f) => f.endsWith(".md") || f.endsWith(".mdx")
-      );
-    } catch {
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: "Could not read src/guidelines/ directory. Make sure it exists.",
-          },
-        ],
-      };
-    }
-
-    if (mdFiles.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "No markdown files found in src/guidelines/.",
-          },
-        ],
-      };
-    }
-
-    const needle = keyword.toLowerCase();
-    const excerpts: string[] = [];
-
-    for (const file of mdFiles) {
-      if (excerpts.length >= max_results) break;
-      const content = await fs.readFile(file, "utf-8");
-      const lines = content.split("\n");
-      const relative = path.relative(process.cwd(), file);
-
-      for (let i = 0; i < lines.length; i++) {
-        if (excerpts.length >= max_results) break;
-        if (lines[i].toLowerCase().includes(needle)) {
-          // Grab up to 3 lines of context
-          const start = Math.max(0, i - 1);
-          const end = Math.min(lines.length - 1, i + 2);
-          const snippet = lines.slice(start, end + 1).join("\n");
-          excerpts.push(`**${relative}** (line ${i + 1}):\n\`\`\`\n${snippet}\n\`\`\``);
-        }
-      }
-    }
-
-    if (excerpts.length === 0) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `No results found for "${keyword}" across ${mdFiles.length} guideline file(s).`,
-          },
-        ],
-      };
-    }
-
-    return {
-      content: [
-        {
-          type: "text",
-          text: `Found ${excerpts.length} result(s) for "${keyword}":\n\n${excerpts.join("\n\n---\n\n")}`,
-        },
-      ],
-    };
-  }
-);
-
-// ---------------------------------------------------------------------------
-// Start
-// ---------------------------------------------------------------------------
-
-async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  // MCP servers communicate over stdio — do not write to stdout
-  process.stderr.write("Brandsync MCP server running on stdio\n");
+/** Reads live tokens.css from the installed brandsync-tokens npm package.
+ *  import.meta.resolve respects the package exports map. */
+function loadTokenCSS(): string {
+  const tokenPath = fileURLToPath(import.meta.resolve("brandsync-tokens/tokens.css"));
+  return fs.readFileSync(tokenPath, "utf8");
 }
 
-main().catch((err) => {
-  process.stderr.write(`Fatal: ${err}\n`);
-  process.exit(1);
-});
+/** Parses tokens.css into a flat { '--bs-token': 'value' } map */
+function parseTokens(css: string): Record<string, string> {
+  const tokens: Record<string, string> = {};
+  const re = /(--bs-[\w-]+)\s*:\s*([^;]+);/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(css)) !== null) {
+    tokens[m[1].trim()] = m[2].trim();
+  }
+  return tokens;
+}
+
+/** Resolves the path to a component spec JSON file */
+function specPath(component: string): string {
+  return path.resolve(
+    process.cwd(),
+    "src/components",
+    component,
+    `${component}.spec.json`
+  );
+}
+
+/** Resolves the guidelines directory */
+function guidelinesDir(): string {
+  return path.resolve(process.cwd(), "src/guidelines");
+}
+
+// ─── Tool: get_tokens ────────────────────────────────────────────────────────
+
+server.tool(
+  "get_tokens",
+  "Returns live design tokens from the brandsync-tokens npm package. Optionally filter by category prefix (e.g. 'color', 'spacing', 'font').",
+  {
+    filter: z
+      .string()
+      .optional()
+      .describe("Optional prefix to filter tokens e.g. 'color', 'spacing', 'font-size'"),
+    format: z
+      .enum(["flat", "grouped"])
+      .optional()
+      .default("flat")
+      .describe("'flat' returns all tokens as key/value pairs. 'grouped' groups by category."),
+  },
+  async ({ filter, format }) => {
+    const css = loadTokenCSS();
+    let tokens = parseTokens(css);
+
+    // Apply filter
+    if (filter) {
+      const prefix = `--bs-${filter}`;
+      tokens = Object.fromEntries(
+        Object.entries(tokens).filter(([k]) => k.startsWith(prefix))
+      );
+    }
+
+    if (Object.keys(tokens).length === 0) {
+      return {
+        content: [{ type: "text", text: `No tokens found${filter ? ` matching '--bs-${filter}'` : ""}.` }],
+      };
+    }
+
+    // Grouped format — bucket by second segment e.g. --bs-COLOR-xxx → color
+    if (format === "grouped") {
+      const groups: Record<string, Record<string, string>> = {};
+      for (const [k, v] of Object.entries(tokens)) {
+        const seg = k.split("-")[2] ?? "other";
+        groups[seg] ??= {};
+        groups[seg][k] = v;
+      }
+      return {
+        content: [{ type: "text", text: JSON.stringify(groups, null, 2) }],
+      };
+    }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(tokens, null, 2) }],
+    };
+  }
+);
+
+// ─── Tool: get_component_spec ─────────────────────────────────────────────────
+
+server.tool(
+  "get_component_spec",
+  "Returns the full structured spec for a Brandsync design system component — anatomy, variants, sizes, token mappings, usage rules, and accessibility requirements.",
+  {
+    component: z
+      .string()
+      .describe("Component name with correct casing e.g. 'Button', 'Input', 'Modal'"),
+    section: z
+      .enum(["overview", "specification", "usage", "guidelines", "accessibility", "all"])
+      .optional()
+      .default("all")
+      .describe("Which section of the spec to return. Defaults to all."),
+  },
+  async ({ component, section }) => {
+    const p = specPath(component);
+
+    if (!fs.existsSync(p)) {
+      // List available specs to help the caller
+      const componentsDir = path.resolve(process.cwd(), "src/components");
+      const available = fs.existsSync(componentsDir)
+        ? fs.readdirSync(componentsDir).filter((d) =>
+            fs.existsSync(path.join(componentsDir, d, `${d}.spec.json`))
+          )
+        : [];
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `No spec found for "${component}".${
+              available.length
+                ? ` Available components: ${available.join(", ")}`
+                : " No spec files exist yet — create src/components/{Name}/{Name}.spec.json"
+            }`,
+          },
+        ],
+      };
+    }
+
+    const spec = JSON.parse(fs.readFileSync(p, "utf8"));
+    const result = section === "all" ? spec : { component: spec.component, [section]: spec[section] };
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// ─── Tool: search_guidelines ──────────────────────────────────────────────────
+
+server.tool(
+  "search_guidelines",
+  "Searches Brandsync design system guidelines (markdown files) by keyword. Returns matching excerpts with file references.",
+  {
+    query: z.string().describe("Keyword or phrase to search for e.g. 'button', 'color contrast', 'spacing'"),
+    maxResults: z
+      .number()
+      .optional()
+      .default(5)
+      .describe("Maximum number of matching excerpts to return"),
+  },
+  async ({ query, maxResults }) => {
+    const dir = guidelinesDir();
+
+    if (!fs.existsSync(dir)) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Guidelines directory not found at src/guidelines/. Create markdown files there to enable search.",
+          },
+        ],
+      };
+    }
+
+    const files = fs
+      .readdirSync(dir)
+      .filter((f) => f.endsWith(".md"));
+
+    if (files.length === 0) {
+      return {
+        content: [{ type: "text", text: "No guideline files found in src/guidelines/." }],
+      };
+    }
+
+    const q = query.toLowerCase();
+    const results: { file: string; excerpt: string }[] = [];
+
+    for (const file of files) {
+      if (results.length >= maxResults) break;
+      const content = fs.readFileSync(path.join(dir, file), "utf8");
+      const lines = content.split("\n");
+
+      for (let i = 0; i < lines.length; i++) {
+        if (results.length >= maxResults) break;
+        if (lines[i].toLowerCase().includes(q)) {
+          // Return a window of context around the match
+          const start = Math.max(0, i - 2);
+          const end = Math.min(lines.length - 1, i + 3);
+          results.push({
+            file,
+            excerpt: lines.slice(start, end).join("\n").trim(),
+          });
+        }
+      }
+    }
+
+    if (results.length === 0) {
+      return {
+        content: [{ type: "text", text: `No guidelines found matching "${query}".` }],
+      };
+    }
+
+    const output = results
+      .map((r, i) => `[${i + 1}] ${r.file}\n${r.excerpt}`)
+      .join("\n\n---\n\n");
+
+    return {
+      content: [{ type: "text", text: output }],
+    };
+  }
+);
+
+// ─── Start ───────────────────────────────────────────────────────────────────
+
+const transport = new StdioServerTransport();
+await server.connect(transport);
