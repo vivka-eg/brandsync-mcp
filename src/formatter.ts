@@ -1,4 +1,5 @@
 import type { StrapiComponent, StrapiImage } from "./strapi.js";
+import { strapiBase, strapiToken } from "./strapi.js";
 import { buildTokenSection } from "./tokens.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -7,10 +8,10 @@ export type ContentBlock =
   | { type: "text"; text: string }
   | { type: "image"; data: string; mimeType: string };
 
-type UsageVariant     = { title: string; description: string; images: string[] };
+type UsageVariant     = { title: string; description: string; imageUrls: string[] };
 type UsageLayout      = { title: string; description: string; variants: UsageVariant[] };
-type UsageCombination = { name: string; pattern: string; whenToUse: string; image?: string };
-type UsageExample     = { caption: string; image?: string };
+type UsageCombination = { name: string; pattern: string; whenToUse: string; imageUrl?: string };
+type UsageExample     = { caption: string; imageUrl?: string };
 
 type ParsedUsage = {
   intro: string;
@@ -37,25 +38,65 @@ async function fetchImage(img: StrapiImage): Promise<ContentBlock | null> {
   }
 }
 
+// ─── Usage image URL refresher ────────────────────────────────────────────────
+
+/**
+ * Usage markdown blobs contain 15-min signed S3 URLs.
+ * The /api/upload/files endpoint returns permanent URLs for the same asset.
+ * Extract the hash from the expired URL and look it up to get a permanent one.
+ */
+async function refreshImageUrl(expiredUrl: string): Promise<string> {
+  try {
+    const pathMatch = expiredUrl.match(/\/([^\/\?]+?)(\?|$)/);
+    if (!pathMatch) return expiredUrl;
+    const hash = pathMatch[1].replace(/\.[^.]+$/, ""); // strip extension
+    const res = await fetch(
+      `${strapiBase}/api/upload/files?filters[hash][$eq]=${hash}`,
+      { headers: { Authorization: `Bearer ${strapiToken}` } }
+    );
+    if (!res.ok) return expiredUrl;
+    const files = (await res.json()) as { url?: string }[];
+    return files[0]?.url ?? expiredUrl;
+  } catch {
+    return expiredUrl;
+  }
+}
+
+async function fetchImageFromUrl(url: string): Promise<ContentBlock | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    return {
+      type: "image",
+      data: Buffer.from(buf).toString("base64"),
+      mimeType: res.headers.get("content-type") ?? "image/svg+xml",
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ─── Usage parser ─────────────────────────────────────────────────────────────
 
 function parseUsageContent(md: string): ParsedUsage {
   const clean = md
     .replace(/\{\{space:\d+px\}\}/g, "")
-    .replace(/^[ \t]+(#{1,6} )/gm, "$1") // remove leading spaces before headings
+    .replace(/^[ \t]+(#{1,6} )/gm, "$1")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 
-  const pullImages = (text: string): { text: string; images: string[] } => {
-    const images: string[] = [];
+  // Extract image URLs (not just alt text) from markdown image syntax
+  const pullImages = (text: string): { text: string; imageUrls: string[] } => {
+    const imageUrls: string[] = [];
     const stripped = text
-      .replace(/!\[([^\]]*)\]\(https?:\/\/[^\)]+\)/g, (_, alt) => {
-        if (alt) images.push(alt);
+      .replace(/!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)/g, (_, _alt, url) => {
+        if (url) imageUrls.push(url);
         return "";
       })
       .replace(/\n{3,}/g, "\n\n")
       .trim();
-    return { text: stripped, images };
+    return { text: stripped, imageUrls };
   };
 
   const splitByHeading = (text: string, level: number) =>
@@ -82,30 +123,30 @@ function parseUsageContent(md: string): ParsedUsage {
       const variants: UsageVariant[] = [];
       for (const sub of h6Blocks.slice(1)) {
         const sh = sub.match(/^#{6}\s+\*{0,2}(.+?)\*{0,2}\s*\n/);
-        const { text, images } = pullImages(sh ? sub.slice(sh[0].length).trim() : sub.trim());
-        variants.push({ title: sh?.[1]?.trim() ?? "", description: text, images });
+        const { text, imageUrls } = pullImages(sh ? sub.slice(sh[0].length).trim() : sub.trim());
+        variants.push({ title: sh?.[1]?.trim() ?? "", description: text, imageUrls });
       }
       result.layoutRules.push({ title: heading, description: layoutDesc, variants });
     } else if (lc.includes("combination")) {
       for (const sub of splitByHeading(body, 6)) {
         const sh = sub.match(/^#{6}\s+\*{0,2}(.+?)\*{0,2}\s*\n/);
         if (!sh) continue;
-        const { text, images } = pullImages(sub.slice(sh[0].length).trim());
+        const { text, imageUrls } = pullImages(sub.slice(sh[0].length).trim());
         result.combinationRules.push({
           name:      sh[1].trim(),
           pattern:   text.match(/Pattern:\s*(.+)/)?.[1]?.trim() ?? "",
           whenToUse: text.match(/Use when:\s*(.+)/)?.[1]?.trim() ?? "",
-          image:     images[0],
+          imageUrl:  imageUrls[0],
         });
       }
     } else if (lc.includes("example")) {
-      const { text: exBody, images: exImages } = pullImages(body);
+      const { text: exBody, imageUrls: exImageUrls } = pullImages(body);
       exBody
         .split("\n\n")
         .map((l) => l.trim())
         .filter(Boolean)
         .forEach((caption, i) => {
-          result.examples.push({ caption, image: exImages[i] });
+          result.examples.push({ caption, imageUrl: exImageUrls[i] });
         });
     }
   }
@@ -115,42 +156,55 @@ function parseUsageContent(md: string): ParsedUsage {
 
 // ─── Usage formatter ──────────────────────────────────────────────────────────
 
-function formatParsedUsage(u: ParsedUsage): string {
-  const s: string[] = [];
+async function formatParsedUsage(u: ParsedUsage): Promise<ContentBlock[]> {
+  const blocks: ContentBlock[] = [];
+
+  const addText = (t: string) => {
+    if (t.trim()) blocks.push({ type: "text", text: t.trim() });
+  };
+
+  const addUsageImage = async (expiredUrl: string) => {
+    const freshUrl = await refreshImageUrl(expiredUrl);
+    const block = await fetchImageFromUrl(freshUrl);
+    if (block) blocks.push(block);
+  };
 
   if (u.intro) {
-    s.push("### Overview");
-    s.push(u.intro);
+    addText("### Overview\n" + u.intro);
   }
+
   if (u.layoutRules.length) {
-    s.push("\n### Layout Rules");
+    addText("\n### Layout Rules");
     for (const rule of u.layoutRules) {
-      if (rule.description) s.push(rule.description);
+      if (rule.description) addText(rule.description);
       for (const v of rule.variants) {
-        s.push(`\n**${v.title}**`);
-        if (v.description) s.push(v.description);
-        for (const img of v.images) s.push(`[image: ${img}]`);
+        addText(`\n**${v.title}**`);
+        if (v.description) addText(v.description);
+        for (const url of v.imageUrls) await addUsageImage(url);
       }
     }
   }
+
   if (u.combinationRules.length) {
-    s.push("\n### Combination Rules");
+    addText("\n### Combination Rules");
     for (const c of u.combinationRules) {
-      s.push(`\n**${c.name}**`);
-      if (c.pattern)   s.push(`Pattern: ${c.pattern}`);
-      if (c.whenToUse) s.push(`Use when: ${c.whenToUse}`);
-      if (c.image)     s.push(`[image: ${c.image}]`);
-    }
-  }
-  if (u.examples.length) {
-    s.push("\n### Examples");
-    for (const e of u.examples) {
-      if (e.image)   s.push(`[image: ${e.image}]`);
-      if (e.caption) s.push(e.caption);
+      const lines = [`\n**${c.name}**`];
+      if (c.pattern)   lines.push(`Pattern: ${c.pattern}`);
+      if (c.whenToUse) lines.push(`Use when: ${c.whenToUse}`);
+      addText(lines.join("\n"));
+      if (c.imageUrl) await addUsageImage(c.imageUrl);
     }
   }
 
-  return s.join("\n");
+  if (u.examples.length) {
+    addText("\n### Examples");
+    for (const e of u.examples) {
+      if (e.imageUrl) await addUsageImage(e.imageUrl);
+      if (e.caption)  addText(e.caption);
+    }
+  }
+
+  return blocks;
 }
 
 // ─── Component formatter ──────────────────────────────────────────────────────
@@ -218,10 +272,12 @@ export async function formatComponent(item: StrapiComponent): Promise<ContentBlo
     }
   }
 
-  // Usage
+  // Usage — flush text first, then interleave usage blocks (text + images)
   if (item.Usage?.Content) {
     text.push("\n## Usage\n");
-    text.push(formatParsedUsage(parseUsageContent(item.Usage.Content)));
+    flush();
+    const usageBlocks = await formatParsedUsage(parseUsageContent(item.Usage.Content));
+    blocks.push(...usageBlocks);
   }
 
   // Guidelines

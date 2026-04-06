@@ -25,11 +25,11 @@ export function register(server: McpServer) {
       let data: unknown;
       try {
         const params = new URLSearchParams({
-          "populate[0]":               "Article",
-          "populate[1]":               "Article.Blocks",
-          "populate[2]":               "Article.Video",
-          "pagination[pageSize]":      String(maxResults),
-          "filters[Title][$containsi]": query,
+          "populate[0]":                        "Article",
+          "populate[1]":                        "Article.Blocks",
+          "populate[2]":                        "Article.Video",
+          "pagination[pageSize]":               String(maxResults),
+          "filters[Article][Title][$containsi]": query,
         });
         data = await strapiQuery("foundations", params);
       } catch (err) {
