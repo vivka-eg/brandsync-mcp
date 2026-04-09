@@ -8,6 +8,12 @@ export type ContentBlock =
   | { type: "text"; text: string }
   | { type: "image"; data: string; mimeType: string };
 
+/** MCP clients like Claude Desktop don't support SVG image blocks.
+ *  Strip all image content blocks — text content is sufficient for AI context. */
+export function textOnly(blocks: ContentBlock[]): ContentBlock[] {
+  return blocks.filter((b): b is { type: "text"; text: string } => b.type === "text");
+}
+
 type UsageVariant     = { title: string; description: string; imageUrls: string[] };
 type UsageLayout      = { title: string; description: string; variants: UsageVariant[] };
 type UsageCombination = { name: string; pattern: string; whenToUse: string; imageUrl?: string };
@@ -300,6 +306,21 @@ export async function formatComponent(item: StrapiComponent): Promise<ContentBlo
       for (const el of a.AccessiblityElement ?? []) {
         text.push(`\n#### ${el.ElementTitle}`);
         if (el.Description) text.push(el.Description.trim());
+      }
+    }
+  }
+
+  // Code Examples
+  if (item.CodeExamples?.length) {
+    text.push("\n## Code Examples\n");
+    const byGroup: Record<string, typeof item.CodeExamples> = {};
+    for (const ex of item.CodeExamples) {
+      (byGroup[ex.Group] ??= []).push(ex);
+    }
+    for (const [group, examples] of Object.entries(byGroup)) {
+      text.push(`### ${group}\n`);
+      for (const ex of examples!) {
+        text.push(`#### ${ex.Variant} (${ex.Framework})\n\`\`\`${ex.Framework.toLowerCase()}\n${ex.Code}\n\`\`\``);
       }
     }
   }

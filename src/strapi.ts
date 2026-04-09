@@ -52,4 +52,5 @@ export type StrapiComponent = {
   Usage?: { Content?: string };
   Guidelines?: { Title: string; GuidelineElement?: GuidelineElement[] }[];
   Accessiblity?: { Title: string; AccessiblityElement?: AccessibilityElement[] }[]; // typo in Strapi
+  CodeExamples?: { id: number; Framework: string; Variant: string; Group: string; Code: string }[];
 };

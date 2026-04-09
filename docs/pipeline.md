@@ -161,7 +161,7 @@ The designer opens the BrandSync Figma plugin. It reads the structured design sp
 
 ### Tools
 - **Figma Plugin API** — native write access, no Desktop Bridge needed
-- **BrandSync tokens → Figma variables** — synced via `figma-console-mcp/scripts/sync-brandsync-tokens.mjs`
+- **BrandSync tokens → Figma variables** — synced via `sync-brandsync-tokens.mjs`
 - **BrandSync component library** — existing Figma components mapped to `bs-` naming
 
 ### Input
@@ -211,7 +211,7 @@ Atlassian MCP connects Claude Console directly to Jira. New tickets trigger the 
 | Dark mode — package-driven via `data-theme="dark"`, no hardcoded overrides | ✅ |
 | Token sync script — `sync-brandsync-tokens.mjs` strips `bs-` for Figma variables | ✅ |
 | Designer skills — full chain (ux-strategy, design-research, interaction-design, design-systems) | ✅ |
-| Figma Console MCP — 94 tools, write access, Desktop Bridge | ✅ |
+| Figma Developer MCP — official read access, no Desktop Bridge needed | ✅ |
 
 ---
 

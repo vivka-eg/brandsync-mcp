@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { strapiBase, strapiToken, type StrapiComponent } from "../strapi.js";
-import { formatComponent } from "../formatter.js";
+import { formatComponent, textOnly } from "../formatter.js";
 
 export function register(server: McpServer) {
   server.registerTool(
@@ -64,6 +64,7 @@ export function register(server: McpServer) {
           "populate[Usage][populate]":                       "*",
           "populate[Guidelines][populate]":                  "*",
           "populate[Accessiblity][populate]":                "*",
+          "populate[CodeExamples]":                          "true",
         });
         const res = await fetch(
           `${strapiBase}/api/components/${documentId}?${deepParams.toString()}`,
@@ -87,7 +88,7 @@ export function register(server: McpServer) {
         };
       }
 
-      const blocks = await formatComponent(item);
+      const blocks = textOnly(await formatComponent(item));
       return { content: blocks };
     }
   );
