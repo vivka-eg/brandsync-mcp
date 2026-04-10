@@ -1,0 +1,115 @@
+<!--
+  BrandSync Component: Navigation Drawer
+  Navigation drawers provide access to main destinations in an app. They slide in from the side or are permanently visible on wider screens.
+
+  Variants: Persistent, Temporary
+  Design tokens used: --bs-border-radius-150, --bs-border-default, --bs-surface-base, --bs-spacing-200, --bs-spacing-150, --bs-spacing-300, --bs-font-size-lg, --bs-text-default, --bs-spacing-75, --bs-font-size-xs, --bs-text-muted, --bs-spacing-100, --bs-border-radius-100, --bs-font-size-sm, --bs-surface-hover, --bs-color-primary-container, --bs-color-primary-default, --bs-border-neutral-focus, --bs-font-size-md, --bs-spacing-250, --bs-text-inverse, --bs-font-size-2xs, --bs-border-radius-full, --bs-surface-container, --bs-spacing-400, --bs-border-radius-50, --bs-icon-default, --bs-shadow-elevation-md, --bs-icon-muted, --bs-spacing-50
+  CSS classes: bs-app-shell, bs-nav-drawer, bs-nav-brand, bs-nav-section-label, bs-nav-item, bs-active, bs-nav-icon, bs-nav-badge, bs-app-content, bs-app-frame, bs-app-header, bs-menu-btn, bs-menu-bar, bs-header-title, bs-nav-overlay, bs-drawer-header, bs-drawer-title, bs-close-btn
+  Total examples: 2
+-->
+
+<!-- Group: Variants -->
+
+<!--
+  Variant: Persistent
+  Framework: HTML
+  Tokens: --bs-border-radius-150, --bs-border-default, --bs-surface-base, --bs-spacing-200, --bs-spacing-150, --bs-spacing-300, --bs-font-size-lg, --bs-text-default, --bs-spacing-75, --bs-font-size-xs, --bs-text-muted, --bs-spacing-100, --bs-border-radius-100, --bs-font-size-sm, --bs-surface-hover, --bs-color-primary-container, --bs-color-primary-default, --bs-border-neutral-focus, --bs-font-size-md, --bs-spacing-250, --bs-text-inverse, --bs-font-size-2xs, --bs-border-radius-full, --bs-surface-container
+  Classes: bs-app-shell, bs-nav-drawer, bs-nav-brand, bs-nav-section-label, bs-nav-item, bs-active, bs-nav-icon, bs-nav-badge, bs-app-content
+-->
+<!-- brandsync: Navigation Drawer / Variants / Persistent | requires: brandsync-tokens -->
+<style>
+.bs-app-shell { display: flex; height: 400px; border-radius: var(--bs-border-radius-150); overflow: hidden; border: 1px solid var(--bs-border-default); }
+.bs-nav-drawer { width: 260px; flex-shrink: 0; background: var(--bs-surface-base); border-right: 1px solid var(--bs-border-default); display: flex; flex-direction: column; padding: var(--bs-spacing-200) 0; }
+.bs-nav-brand { padding: var(--bs-spacing-150) var(--bs-spacing-200) var(--bs-spacing-300); font-size: var(--bs-font-size-lg); font-weight: 800; color: var(--bs-text-default); border-bottom: 1px solid var(--bs-border-default); margin-bottom: var(--bs-spacing-150); }
+.bs-nav-section-label { padding: var(--bs-spacing-75) var(--bs-spacing-200); font-size: var(--bs-font-size-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.bs-5px; color: var(--bs-text-muted); }
+.bs-nav-item { display: flex; align-items: center; gap: var(--bs-spacing-150); padding: var(--bs-spacing-100) var(--bs-spacing-200); margin: 0 var(--bs-spacing-100); border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-sm); font-weight: 500; color: var(--bs-text-default); cursor: pointer; transition: background 0.bs-15s; text-decoration: none; border: none; background: none; width: calc(100% - var(--bs-spacing-200)); text-align: left; font-family: inherit; }
+.bs-nav-item:hover { background: var(--bs-surface-hover); }
+.bs-nav-item.bs-active { background: var(--bs-color-primary-container); color: var(--bs-color-primary-default); font-weight: 600; }
+.bs-nav-item:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); }
+.bs-nav-icon { font-size: var(--bs-font-size-md); width: var(--bs-spacing-250); text-align: center; flex-shrink: 0; }
+.bs-nav-badge { margin-left: auto; background: var(--bs-color-primary-default); color: var(--bs-text-inverse); font-size: var(--bs-font-size-2xs); font-weight: 700; padding: 2px var(--bs-spacing-75); border-radius: var(--bs-border-radius-full); }
+.bs-app-content { flex: 1; padding: var(--bs-spacing-300); background: var(--bs-surface-container); }
+.bs-app-content h2 { font-size: var(--bs-font-size-lg); font-weight: 700; color: var(--bs-text-default); margin: 0 0 var(--bs-spacing-150); }
+.bs-app-content p { font-size: var(--bs-font-size-sm); color: var(--bs-text-muted); }
+</style>
+<div class="bs-app-shell">
+  <nav class="bs-nav-drawer" aria-label="Main navigation">
+    <div class="bs-nav-brand">Brandsync</div>
+    <span class="bs-nav-section-label">Main</span>
+    <a class="bs-nav-item bs-active" href="#" aria-current="page">
+      <span class="bs-nav-icon" aria-hidden="true">🏠</span> Dashboard
+    </a>
+    <a class="bs-nav-item" href="#">
+      <span class="bs-nav-icon" aria-hidden="true">📦</span> Components
+      <span class="bs-nav-badge">16</span>
+    </a>
+    <a class="bs-nav-item" href="#">
+      <span class="bs-nav-icon" aria-hidden="true">🎨</span> Tokens
+    </a>
+    <a class="bs-nav-item" href="#">
+      <span class="bs-nav-icon" aria-hidden="true">📖</span> Guidelines
+    </a>
+    <span class="bs-nav-section-label" style="margin-top:var(--bs-spacing-150)">Settings</span>
+    <a class="bs-nav-item" href="#">
+      <span class="bs-nav-icon" aria-hidden="true">⚙</span> Preferences
+    </a>
+    <a class="bs-nav-item" href="#">
+      <span class="bs-nav-icon" aria-hidden="true">❓</span> Help
+    </a>
+  </nav>
+  <main class="bs-app-content">
+    <h2>Dashboard</h2>
+    <p>Main content area. Navigation is persistent on wider screens.</p>
+  </main>
+</div>
+
+<!--
+  Variant: Temporary
+  Framework: HTML
+  Tokens: --bs-border-radius-150, --bs-border-default, --bs-surface-container, --bs-spacing-150, --bs-spacing-200, --bs-surface-base, --bs-spacing-400, --bs-border-radius-50, --bs-surface-hover, --bs-border-neutral-focus, --bs-spacing-250, --bs-icon-default, --bs-font-size-md, --bs-text-default, --bs-shadow-elevation-md, --bs-icon-muted, --bs-font-size-lg, --bs-spacing-50, --bs-spacing-100, --bs-font-size-sm, --bs-color-primary-container, --bs-color-primary-default, --bs-spacing-300, --bs-text-muted
+  Classes: bs-app-frame, bs-app-header, bs-menu-btn, bs-menu-bar, bs-header-title, bs-nav-overlay, bs-nav-drawer, bs-drawer-header, bs-drawer-title, bs-close-btn, bs-nav-item, bs-active, bs-nav-icon
+-->
+<!-- brandsync: Navigation Drawer / Variants / Temporary | requires: brandsync-tokens -->
+<style>
+.bs-app-frame { position: relative; height: 400px; overflow: hidden; border-radius: var(--bs-border-radius-150); border: 1px solid var(--bs-border-default); background: var(--bs-surface-container); }
+.bs-app-header { display: flex; align-items: center; gap: var(--bs-spacing-150); padding: var(--bs-spacing-150) var(--bs-spacing-200); background: var(--bs-surface-base); border-bottom: 1px solid var(--bs-border-default); }
+.bs-menu-btn { width: var(--bs-spacing-400); height: var(--bs-spacing-400); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: none; border: none; cursor: pointer; border-radius: var(--bs-border-radius-50); }
+.bs-menu-btn:hover { background: var(--bs-surface-hover); }
+.bs-menu-btn:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); }
+.bs-menu-bar { width: var(--bs-spacing-250); height: 2px; background: var(--bs-icon-default); border-radius: 1px; }
+.bs-header-title { font-size: var(--bs-font-size-md); font-weight: 700; color: var(--bs-text-default); }
+.bs-nav-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.bs-4); opacity: 0; pointer-events: none; transition: opacity 0.bs-25s; z-index: 10; }
+.bs-nav-overlay.bs-open { opacity: 1; pointer-events: all; }
+.bs-nav-drawer { position: absolute; left: 0; top: 0; bottom: 0; width: 240px; background: var(--bs-surface-base); z-index: 11; transform: translateX(-100%); transition: transform 0.bs-25s ease; display: flex; flex-direction: column; padding: var(--bs-spacing-200) 0; box-shadow: var(--bs-shadow-elevation-md); }
+.bs-nav-drawer.bs-open { transform: translateX(0); }
+.bs-drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 0 var(--bs-spacing-200) var(--bs-spacing-200); border-bottom: 1px solid var(--bs-border-default); margin-bottom: var(--bs-spacing-150); }
+.bs-drawer-title { font-size: var(--bs-font-size-md); font-weight: 800; color: var(--bs-text-default); }
+.bs-close-btn { background: none; border: none; cursor: pointer; color: var(--bs-icon-muted); font-size: var(--bs-font-size-lg); padding: var(--bs-spacing-50); border-radius: var(--bs-border-radius-50); }
+.bs-close-btn:hover { background: var(--bs-surface-hover); }
+.bs-nav-item { display: flex; align-items: center; gap: var(--bs-spacing-150); padding: var(--bs-spacing-100) var(--bs-spacing-200); font-size: var(--bs-font-size-sm); color: var(--bs-text-default); cursor: pointer; transition: background 0.bs-15s; text-decoration: none; font-weight: 500; font-family: inherit; background: none; border: none; width: 100%; text-align: left; }
+.bs-nav-item:hover { background: var(--bs-surface-hover); }
+.bs-nav-item.bs-active { background: var(--bs-color-primary-container); color: var(--bs-color-primary-default); font-weight: 600; }
+.bs-nav-icon { font-size: var(--bs-font-size-md); }
+</style>
+<div class="bs-app-frame">
+  <div class="bs-app-header">
+    <button class="bs-menu-btn" aria-label="Open navigation" aria-expanded="false" aria-controls="temp-drawer"
+      onclick="document.getElementById('temp-drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded', this.getAttribute('aria-expanded')==='false'?'true':'false')">
+      <div class="bs-menu-bar"></div><div class="bs-menu-bar"></div><div class="bs-menu-bar"></div>
+    </button>
+    <span class="bs-header-title">Brandsync</span>
+  </div>
+  <div class="bs-nav-overlay" id="overlay" onclick="document.getElementById('temp-drawer').classList.remove('open');this.classList.remove('open')"></div>
+  <nav class="bs-nav-drawer" id="temp-drawer" aria-label="Main navigation">
+    <div class="bs-drawer-header">
+      <span class="bs-drawer-title">Menu</span>
+      <button class="bs-close-btn" aria-label="Close navigation" onclick="document.getElementById('temp-drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">✕</button>
+    </div>
+    <a class="bs-nav-item bs-active" href="#" aria-current="page"><span class="bs-nav-icon" aria-hidden="true">🏠</span> Dashboard</a>
+    <a class="bs-nav-item" href="#"><span class="bs-nav-icon" aria-hidden="true">📦</span> Components</a>
+    <a class="bs-nav-item" href="#"><span class="bs-nav-icon" aria-hidden="true">🎨</span> Tokens</a>
+    <a class="bs-nav-item" href="#"><span class="bs-nav-icon" aria-hidden="true">📖</span> Guidelines</a>
+    <a class="bs-nav-item" href="#"><span class="bs-nav-icon" aria-hidden="true">⚙</span> Settings</a>
+  </nav>
+  <div style="padding:var(--bs-spacing-300);color:var(--bs-text-muted);font-size:var(--bs-font-size-sm)">Click the ☰ menu button to open the drawer</div>
+</div>

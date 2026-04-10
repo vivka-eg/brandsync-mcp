@@ -12,13 +12,16 @@ function readSkill(filename: string): string {
 
 const SYSTEM_PROMPT = readSkill("CLAUDE-PROJECT-INSTRUCTIONS.md");
 const SKILLS = {
-  "1-design-brief":        readSkill("1-design-brief.md"),
-  "2-user-persona":        readSkill("2-user-persona.md"),
-  "3-user-flow":           readSkill("3-user-flow.md"),
-  "4-lofi-screens":        readSkill("4-lofi-screens.md"),
-  "6-figjam-board":        readSkill("6-figjam-board.md"),
-  "pocket2-wireframe":     readSkill("pocket-2/4-wireframe.md"),
-  "pocket2-component-spec": readSkill("pocket-2/5-component-spec.md"),
+  // Pocket 1 — Claude Desktop
+  "1-design-brief":              readSkill("1-design-brief.md"),
+  "2-user-persona":              readSkill("2-user-persona.md"),
+  "3-user-flow":                 readSkill("3-user-flow.md"),
+  "4-lofi-screens":              readSkill("4-lofi-screens.md"),
+  "6-figjam-board":              readSkill("6-figjam-board.md"),
+  // Pocket 3 — Claude Code
+  "pocket3-framework-detect":    readSkill("pocket-3/1-framework-detect.md"),
+  "pocket3-screen-to-code":      readSkill("pocket-3/2-screen-to-code.md"),
+  "pocket3-approval-check":      readSkill("pocket-3/3-approval-check.md"),
 };
 
 export function register(server: McpServer) {
@@ -31,7 +34,7 @@ export function register(server: McpServer) {
     "design-pipeline",
     {
       title: "BrandSync Design Pipeline",
-      description: "Full EG BrandSync design pipeline — transforms Jira tickets into FigJam boards, Figma designs, and production code across three pockets.",
+      description: "Full EG BrandSync design pipeline — Pocket 1 (Claude Desktop): Jira → FigJam flow. Pocket 3 (Claude Code): FigJam → production code with BrandSync tokens.",
     },
     () => ({
       messages: [{

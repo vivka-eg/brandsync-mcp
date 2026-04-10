@@ -1,0 +1,220 @@
+# Buttons
+
+**Type:** UI Component
+**Source:** BrandSync Design System (Strapi)
+
+## Description
+
+Buttons trigger actions and guide users through tasks. They come in various styles to match different levels of emphasis, from primary actions to supportive or subtle ones.
+
+## Variants
+
+- Primary
+- Neutral
+- Subtle
+- Outlined
+- Success
+- Warning
+- Info
+- Error
+
+## Frameworks
+
+- HTML
+
+## Design Tokens
+
+- `--bs-border-radius-100`
+- `--bs-font-size-sm`
+- `--bs-color-primary-default`
+- `--bs-text-inverse`
+- `--bs-color-primary-hover`
+- `--bs-border-primary`
+- `--bs-color-primary-focused`
+- `--bs-color-primary-pressed`
+- `--bs-surface-action-disabled`
+- `--bs-text-on-disabled`
+- `--bs-color-neutral-container`
+- `--bs-color-neutral-default`
+- `--bs-color-neutral-container-hover`
+- `--bs-color-neutral-container-pressed`
+- `--bs-color-primary-container`
+- `--bs-border-primary-hover`
+- `--bs-color-success-default`
+- `--bs-icon-static-white`
+- `--bs-color-success-hover`
+- `--bs-border-success-focus`
+- `--bs-color-success-pressed`
+- `--bs-color-warning-default`
+- `--bs-text-default`
+- `--bs-border-warning-focus`
+- `--bs-color-info-default`
+- `--bs-border-info-focus`
+- `--bs-color-info-hover`
+- `--bs-color-error-default`
+- `--bs-color-error-hover`
+- `--bs-border-error-focus`
+- `--bs-color-error-pressed`
+
+## CSS Classes
+
+- `bs-btn`
+- `bs-btn-primary`
+- `bs-btn-neutral`
+- `bs-btn-subtle`
+- `bs-btn-outlined`
+- `bs-btn-success`
+- `bs-btn-warning`
+- `bs-btn-info`
+- `bs-btn-error`
+
+## Code Examples
+
+#### Primary (HTML)
+
+```html
+<!-- brandsync: Buttons / Primary | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-primary { background: var(--bs-color-primary-default); color: var(--bs-text-inverse); }
+.bs-btn-primary:hover { background: var(--bs-color-primary-hover); }
+.bs-btn-primary:focus-visible { outline: 3px solid var(--bs-border-primary); outline-offset: 2px; background: var(--bs-color-primary-focused); }
+.bs-btn-primary:active { background: var(--bs-color-primary-pressed); }
+.bs-btn-primary:disabled { background: var(--bs-surface-action-disabled); color: var(--bs-text-on-disabled); cursor: not-allowed; }
+</style>
+<button class="bs-btn bs-btn-primary">Primary</button>
+```
+
+#### Neutral (HTML)
+
+```html
+<!-- brandsync: Buttons / Neutral | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: all 0.bs-15s; font-family: inherit; }
+.bs-btn-neutral { 
+  background: var(--bs-color-neutral-container); 
+  color: var(--bs-color-neutral-default); 
+  border: 1px solid var(--bs-color-neutral-container-hover); 
+}
+.bs-btn-neutral:hover { 
+  background: var(--bs-color-neutral-container-hover); 
+  border-color: var(--bs-color-neutral-default); 
+}
+.bs-btn-neutral:focus-visible { outline: 3px solid var(--bs-border-primary); outline-offset: 2px; }
+.bs-btn-neutral:active { 
+  background: var(--bs-color-neutral-container-pressed); 
+}
+.bs-btn-neutral:disabled { 
+  background: var(--bs-surface-action-disabled); 
+  border-color: transparent; 
+  color: var(--bs-text-on-disabled); 
+  cursor: not-allowed; 
+}
+</style>
+<button class="bs-btn bs-btn-neutral">Neutral</button>
+```
+
+#### Subtle (HTML)
+
+```html
+<!-- brandsync: Buttons / Subtle | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-subtle { 
+  background: transparent; 
+  color: var(--bs-color-neutral-default); 
+}
+.bs-btn-subtle:hover { 
+  background: var(--bs-color-neutral-container); 
+}
+.bs-btn-subtle:focus-visible { 
+  outline: 3px solid var(--bs-border-primary); 
+  outline-offset: 2px;
+  background: var(--bs-color-neutral-container); 
+}
+.bs-btn-subtle:active { 
+  background: var(--bs-color-neutral-container-pressed); 
+}
+.bs-btn-subtle:disabled { 
+  background: transparent;
+  color: var(--bs-color-neutral-container-pressed);
+  cursor: not-allowed; 
+}
+</style>
+<button class="bs-btn bs-btn-subtle">Subtle</button>
+```
+
+#### Outlined (HTML)
+
+```html
+<!-- brandsync: Buttons / Outlined | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: all 0.bs-15s; font-family: inherit; }
+.bs-btn-outlined { background: transparent; color: var(--bs-color-primary-default); border: 1.bs-5px solid var(--bs-border-primary); }
+.bs-btn-outlined:hover { background: var(--bs-color-primary-container); border-color: var(--bs-border-primary-hover); }
+.bs-btn-outlined:focus-visible { outline: 3px solid var(--bs-border-primary); outline-offset: 2px; }
+.bs-btn-outlined:active { background: var(--bs-color-primary-container); color: var(--bs-color-primary-pressed); border-color: var(--bs-border-primary-hover); }
+.bs-btn-outlined:disabled { opacity: 0.bs-4; cursor: not-allowed; }
+</style>
+<button class="bs-btn bs-btn-outlined">Outlined</button>
+```
+
+#### Success (HTML)
+
+```html
+<!-- brandsync: Buttons / Success | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-success { background: var(--bs-color-success-default); color: var(--bs-icon-static-white); }
+.bs-btn-success:hover { background: var(--bs-color-success-hover); }
+.bs-btn-success:focus-visible { outline: 3px solid var(--bs-border-success-focus); outline-offset: 2px; }
+.bs-btn-success:active { background: var(--bs-color-success-pressed); }
+.bs-btn-success:disabled { background: var(--bs-surface-action-disabled); cursor: not-allowed; }
+</style>
+<button class="bs-btn bs-btn-success">Success</button>
+```
+
+#### Warning (HTML)
+
+```html
+<!-- brandsync: Buttons / Warning | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-warning { background: var(--bs-color-warning-default); color: var(--bs-text-default); }
+.bs-btn-warning:hover { background: var(--bs-color-warning-default); }
+.bs-btn-warning:focus-visible { outline: 3px solid var(--bs-border-warning-focus); outline-offset: 2px; }
+.bs-btn-warning:active { background: var(--bs-color-warning-default); color: var(--bs-icon-static-white); }
+.bs-btn-warning:disabled { background: var(--bs-surface-action-disabled); cursor: not-allowed; color: var(--bs-text-on-disabled); }
+</style>
+<button class="bs-btn bs-btn-warning">Warning</button>
+```
+
+#### Info (HTML)
+
+```html
+<!-- brandsync: Buttons / Info | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-info { background: var(--bs-color-info-default); color: var(--bs-icon-static-white); }
+.bs-btn-info:hover { background: var(--bs-color-info-default); }
+.bs-btn-info:focus-visible { outline: 3px solid var(--bs-border-info-focus); outline-offset: 2px; }
+.bs-btn-info:active { background: var(--bs-color-info-hover); }
+.bs-btn-info:disabled { background: var(--bs-surface-action-disabled); cursor: not-allowed; }
+</style>
+<button class="bs-btn bs-btn-info">Info</button>
+```
+
+#### Error (HTML)
+
+```html
+<!-- brandsync: Buttons / Error | requires: brandsync-tokens -->
+<style>
+.bs-btn { padding: 10px 20px; border: none; border-radius: var(--bs-border-radius-100); font-weight: 600; font-size: var(--bs-font-size-sm); cursor: pointer; transition: background 0.bs-15s; font-family: inherit; }
+.bs-btn-error { background: var(--bs-color-error-default); color: var(--bs-icon-static-white); }
+.bs-btn-error:hover { background: var(--bs-color-error-hover); }
+.bs-btn-error:focus-visible { outline: 3px solid var(--bs-border-error-focus); outline-offset: 2px; }
+.bs-btn-error:active { background: var(--bs-color-error-pressed); }
+.bs-btn-error:disabled { background: var(--bs-surface-action-disabled); cursor: not-allowed; }
+</style>
+<button class="bs-btn bs-btn-error">Error</button>
+```

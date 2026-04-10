@@ -1,0 +1,120 @@
+<!--
+  BrandSync Component: File Upload
+  File upload components let users attach files to forms. They come as a dropzone for drag-and-drop, or a button for browse-only flows.
+
+  Variants: Dropzone, Button, With Preview
+  Design tokens used: --bs-border-default, --bs-border-radius-150, --bs-spacing-500, --bs-spacing-300, --bs-spacing-150, --bs-surface-base, --bs-color-primary-default, --bs-color-primary-container, --bs-border-neutral-focus, --bs-font-size-2xl, --bs-icon-muted, --bs-font-size-md, --bs-text-default, --bs-font-size-sm, --bs-text-muted, --bs-text-action, --bs-text-action-hover, --bs-font-size-xs, --bs-spacing-100, --bs-spacing-200, --bs-text-inverse, --bs-border-radius-100, --bs-color-primary-hover, --bs-font-size-xl, --bs-surface-container, --bs-spacing-50, --bs-border-radius-50, --bs-surface-error, --bs-color-error-default, --bs-surface-hover, --bs-border-radius-full, --bs-color-success-default
+  CSS classes: bs-dropzone, bs-upload-icon, bs-upload-title, bs-upload-hint, bs-upload-link, bs-file-types, bs-upload-btn-wrapper, bs-btn-upload, bs-upload-filename, bs-upload-area, bs-upload-text, bs-upload-sub, bs-file-list, bs-file-item, bs-file-name, bs-file-progress, bs-file-progress-bar, bs-file-size, bs-file-remove
+  Total examples: 3
+-->
+
+<!-- Group: Variants -->
+
+<!--
+  Variant: Dropzone
+  Framework: HTML
+  Tokens: --bs-border-default, --bs-border-radius-150, --bs-spacing-500, --bs-spacing-300, --bs-spacing-150, --bs-surface-base, --bs-color-primary-default, --bs-color-primary-container, --bs-border-neutral-focus, --bs-font-size-2xl, --bs-icon-muted, --bs-font-size-md, --bs-text-default, --bs-font-size-sm, --bs-text-muted, --bs-text-action, --bs-text-action-hover, --bs-font-size-xs
+  Classes: bs-dropzone, bs-upload-icon, bs-upload-title, bs-upload-hint, bs-upload-link, bs-file-types
+-->
+<!-- brandsync: File Upload / Variants / Dropzone | requires: brandsync-tokens -->
+<style>
+.bs-dropzone { border: 2px dashed var(--bs-border-default); border-radius: var(--bs-border-radius-150); padding: var(--bs-spacing-500) var(--bs-spacing-300); display: flex; flex-direction: column; align-items: center; gap: var(--bs-spacing-150); text-align: center; cursor: pointer; transition: border-color 0.bs-15s, background 0.bs-15s; background: var(--bs-surface-base); }
+.bs-dropzone:hover, .bs-dropzone.bs-dragging { border-color: var(--bs-color-primary-default); background: var(--bs-color-primary-container); }
+.bs-dropzone:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); outline-offset: 2px; }
+.bs-dropzone input[type="file"] { display: none; }
+.bs-upload-icon { font-size: var(--bs-font-size-2xl); color: var(--bs-icon-muted); }
+.bs-upload-title { font-size: var(--bs-font-size-md); font-weight: 600; color: var(--bs-text-default); }
+.bs-upload-hint { font-size: var(--bs-font-size-sm); color: var(--bs-text-muted); }
+.bs-upload-link { color: var(--bs-text-action); text-decoration: underline; cursor: pointer; font-weight: 600; }
+.bs-upload-link:hover { color: var(--bs-text-action-hover); }
+.bs-file-types { font-size: var(--bs-font-size-xs); color: var(--bs-text-muted); }
+</style>
+<label class="bs-dropzone" tabindex="0" role="button" aria-label="Upload files — drag and drop or click to browse"
+  ondragover="event.preventDefault();this.classList.add('dragging')"
+  ondragleave="this.classList.remove('dragging')"
+  ondrop="event.preventDefault();this.classList.remove('dragging')">
+  <input type="file" multiple accept=".jpg,.png,.pdf,.doc" />
+  <span class="bs-upload-icon" aria-hidden="true">☁</span>
+  <div class="bs-upload-title">Drag &amp; drop files here</div>
+  <div class="bs-upload-hint">or <span class="bs-upload-link">browse to upload</span></div>
+  <div class="bs-file-types">Supported: JPG, PNG, PDF, DOC · Max 10 MB</div>
+</label>
+
+<!--
+  Variant: Button
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-100, --bs-spacing-200, --bs-color-primary-default, --bs-text-inverse, --bs-border-radius-100, --bs-font-size-sm, --bs-color-primary-hover, --bs-border-neutral-focus, --bs-text-muted
+  Classes: bs-upload-btn-wrapper, bs-btn-upload, bs-upload-filename
+-->
+<!-- brandsync: File Upload / Variants / Button | requires: brandsync-tokens -->
+<style>
+.bs-upload-btn-wrapper { display: inline-flex; align-items: center; gap: var(--bs-spacing-150); }
+.bs-btn-upload { display: inline-flex; align-items: center; gap: var(--bs-spacing-100); padding: var(--bs-spacing-100) var(--bs-spacing-200); background: var(--bs-color-primary-default); color: var(--bs-text-inverse); border: none; border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-sm); font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.bs-15s; }
+.bs-btn-upload:hover { background: var(--bs-color-primary-hover); }
+.bs-btn-upload:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); outline-offset: 2px; }
+.bs-btn-upload input { display: none; }
+.bs-upload-filename { font-size: var(--bs-font-size-sm); color: var(--bs-text-muted); }
+</style>
+<div class="bs-upload-btn-wrapper">
+  <label class="bs-btn-upload">
+    <span aria-hidden="true">⬆</span>
+    Choose file
+    <input type="file" onchange="document.getElementById('fname').textContent = this.files[0]?.name || 'No file chosen'" />
+  </label>
+  <span class="bs-upload-filename" id="fname">No file chosen</span>
+</div>
+
+<!--
+  Variant: With Preview
+  Framework: HTML
+  Tokens: --bs-spacing-200, --bs-border-default, --bs-border-radius-150, --bs-spacing-300, --bs-surface-base, --bs-color-primary-default, --bs-font-size-xl, --bs-icon-muted, --bs-font-size-sm, --bs-text-default, --bs-font-size-xs, --bs-text-muted, --bs-spacing-100, --bs-spacing-150, --bs-surface-container, --bs-border-radius-100, --bs-spacing-50, --bs-border-radius-50, --bs-surface-error, --bs-color-error-default, --bs-surface-hover, --bs-border-radius-full, --bs-color-success-default
+  Classes: bs-upload-area, bs-dropzone, bs-upload-icon, bs-upload-text, bs-upload-sub, bs-file-list, bs-file-item, bs-file-name, bs-file-progress, bs-file-progress-bar, bs-file-size, bs-file-remove
+-->
+<!-- brandsync: File Upload / Variants / With Preview | requires: brandsync-tokens -->
+<style>
+.bs-upload-area { display: flex; flex-direction: column; gap: var(--bs-spacing-200); }
+.bs-dropzone { border: 2px dashed var(--bs-border-default); border-radius: var(--bs-border-radius-150); padding: var(--bs-spacing-300); display: flex; align-items: center; gap: var(--bs-spacing-200); cursor: pointer; background: var(--bs-surface-base); transition: border-color 0.bs-15s; }
+.bs-dropzone:hover { border-color: var(--bs-color-primary-default); }
+.bs-dropzone input { display: none; }
+.bs-upload-icon { font-size: var(--bs-font-size-xl); color: var(--bs-icon-muted); }
+.bs-upload-text { font-size: var(--bs-font-size-sm); color: var(--bs-text-default); font-weight: 600; }
+.bs-upload-sub { font-size: var(--bs-font-size-xs); color: var(--bs-text-muted); }
+.bs-file-list { display: flex; flex-direction: column; gap: var(--bs-spacing-100); }
+.bs-file-item { display: flex; align-items: center; gap: var(--bs-spacing-150); padding: var(--bs-spacing-100) var(--bs-spacing-150); background: var(--bs-surface-container); border-radius: var(--bs-border-radius-100); border: 1px solid var(--bs-border-default); }
+.bs-file-name { flex: 1; font-size: var(--bs-font-size-sm); color: var(--bs-text-default); font-weight: 500; }
+.bs-file-size { font-size: var(--bs-font-size-xs); color: var(--bs-text-muted); }
+.bs-file-remove { background: none; border: none; cursor: pointer; color: var(--bs-icon-muted); font-size: var(--bs-font-size-sm); padding: var(--bs-spacing-50); border-radius: var(--bs-border-radius-50); }
+.bs-file-remove:hover { background: var(--bs-surface-error); color: var(--bs-color-error-default); }
+.bs-file-progress { height: var(--bs-spacing-50); background: var(--bs-surface-hover); border-radius: var(--bs-border-radius-full); overflow: hidden; width: 100%; }
+.bs-file-progress-bar { height: 100%; background: var(--bs-color-primary-default); border-radius: var(--bs-border-radius-full); width: 72%; }
+</style>
+<div class="bs-upload-area">
+  <label class="bs-dropzone">
+    <span class="bs-upload-icon" aria-hidden="true">📎</span>
+    <div>
+      <div class="bs-upload-text">Attach files</div>
+      <div class="bs-upload-sub">PDF, JPG, PNG up to 10 MB</div>
+    </div>
+    <input type="file" multiple />
+  </label>
+  <div class="bs-file-list" role="list" aria-label="Attached files">
+    <div class="bs-file-item" role="listitem">
+      <span aria-hidden="true">📄</span>
+      <div style="flex:1">
+        <div class="bs-file-name">design-brief.pdf</div>
+        <div class="bs-file-progress"><div class="bs-file-progress-bar"></div></div>
+      </div>
+      <span class="bs-file-size">2.4 MB</span>
+      <button class="bs-file-remove" aria-label="Remove design-brief.pdf">✕</button>
+    </div>
+    <div class="bs-file-item" role="listitem">
+      <span aria-hidden="true">🖼</span>
+      <div style="flex:1">
+        <div class="bs-file-name">mockup-v3.png</div>
+        <div class="bs-file-progress"><div class="bs-file-progress-bar" style="width:100%;background:var(--bs-color-success-default)"></div></div>
+      </div>
+      <span class="bs-file-size">1.1 MB</span>
+      <button class="bs-file-remove" aria-label="Remove mockup-v3.png">✕</button>
+    </div>
+  </div>
+</div>

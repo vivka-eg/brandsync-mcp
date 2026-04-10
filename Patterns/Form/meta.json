@@ -1,0 +1,54 @@
+{
+  "name": "Form (Order / Work Order)",
+  "category": [
+    "form"
+  ],
+  "useCase": "Multi-section data entry form for structured workflows. Use when a user must fill in information across grouped sections to complete an order, request, or work item. Common in field service, logistics, energy, and operations products.",
+  "responsive": [
+    "Desktop",
+    "Tablet",
+    "Mobile"
+  ],
+  "components": [
+    "Input Fields",
+    "Radio Button",
+    "Buttons",
+    "Breadcrumb",
+    "Progress Stepper",
+    "Badge",
+    "Card",
+    "Accordion",
+    "Navigation Drawer",
+    "Avatar",
+    "Menu"
+  ],
+  "tokens": [
+    "--bs-color-surface-base",
+    "--bs-color-surface-raised",
+    "--bs-color-text-default",
+    "--bs-color-text-secondary",
+    "--bs-color-border-default",
+    "--bs-color-primary-default",
+    "--bs-color-text-inverse"
+  ],
+  "layout": "App shell with top navigation, breadcrumb trail, progress stepper, and multi-section accordion form.",
+  "states": [
+    "Default",
+    "Editing",
+    "Submitting",
+    "Error"
+  ],
+  "darkMode": true,
+  "relatedPatterns": [
+    "Dashboard",
+    "User Management"
+  ],
+  "tags": [
+    "form",
+    "order",
+    "work-order",
+    "data-entry",
+    "multi-section",
+    "accordion"
+  ]
+}

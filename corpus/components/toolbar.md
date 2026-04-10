@@ -1,0 +1,129 @@
+# Toolbar
+
+**Type:** UI Component
+**Source:** BrandSync Design System (Strapi)
+
+## Description
+
+Toolbars are horizontal containers holding a group of action controls — buttons, icon buttons, dividers, and overflows. Common in editors, data tables, and app headers.
+
+## Variants
+
+- Default
+- Action Bar
+
+## Frameworks
+
+- HTML
+
+## Design Tokens
+
+- `--bs-spacing-50`
+- `--bs-spacing-100`
+- `--bs-spacing-150`
+- `--bs-surface-base`
+- `--bs-border-default`
+- `--bs-border-radius-100`
+- `--bs-spacing-400`
+- `--bs-border-radius-50`
+- `--bs-icon-default`
+- `--bs-font-size-md`
+- `--bs-surface-hover`
+- `--bs-color-primary-container`
+- `--bs-color-primary-default`
+- `--bs-border-neutral-focus`
+- `--bs-spacing-300`
+- `--bs-spacing-75`
+- `--bs-font-size-sm`
+- `--bs-text-default`
+- `--bs-spacing-250`
+- `--bs-font-size-lg`
+- `--bs-text-inverse`
+- `--bs-color-primary-hover`
+
+## CSS Classes
+
+- `bs-toolbar`
+- `bs-toolbar-select`
+- `bs-toolbar-divider`
+- `bs-toolbar-btn`
+- `bs-active`
+- `bs-action-bar`
+- `bs-action-bar-left`
+- `bs-page-title`
+- `bs-action-bar-right`
+- `bs-icon-btn`
+- `bs-btn`
+- `bs-btn-ghost`
+- `bs-btn-primary`
+
+## Code Examples
+
+### Variants
+
+#### Default (HTML)
+
+```html
+<!-- brandsync: Toolbar / Variants / Default | requires: brandsync-tokens -->
+<style>
+.bs-toolbar { display: flex; align-items: center; gap: var(--bs-spacing-50); padding: var(--bs-spacing-100) var(--bs-spacing-150); background: var(--bs-surface-base); border: 1px solid var(--bs-border-default); border-radius: var(--bs-border-radius-100); width: fit-content; }
+.bs-toolbar-btn { display: flex; align-items: center; justify-content: center; width: var(--bs-spacing-400); height: var(--bs-spacing-400); border-radius: var(--bs-border-radius-50); background: none; border: none; cursor: pointer; color: var(--bs-icon-default); font-size: var(--bs-font-size-md); transition: background 0.bs-15s; }
+.bs-toolbar-btn:hover { background: var(--bs-surface-hover); }
+.bs-toolbar-btn.bs-active { background: var(--bs-color-primary-container); color: var(--bs-color-primary-default); }
+.bs-toolbar-btn:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); }
+.bs-toolbar-divider { width: 1px; height: var(--bs-spacing-300); background: var(--bs-border-default); margin: 0 var(--bs-spacing-50); flex-shrink: 0; }
+.bs-toolbar-select { padding: var(--bs-spacing-75) var(--bs-spacing-100); border: 1px solid var(--bs-border-default); border-radius: var(--bs-border-radius-50); font-size: var(--bs-font-size-sm); color: var(--bs-text-default); background: var(--bs-surface-base); font-family: inherit; cursor: pointer; }
+.bs-toolbar-select:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); }
+</style>
+<div class="bs-toolbar" role="toolbar" aria-label="Text formatting">
+  <select class="bs-toolbar-select" aria-label="Font size">
+    <option>12</option>
+    <option selected>14</option>
+    <option>16</option>
+    <option>18</option>
+    <option>24</option>
+  </select>
+  <div class="bs-toolbar-divider" role="separator"></div>
+  <button class="bs-toolbar-btn bs-active" aria-pressed="true" aria-label="Bold" title="Bold"><b>B</b></button>
+  <button class="bs-toolbar-btn" aria-pressed="false" aria-label="Italic" title="Italic"><i>I</i></button>
+  <button class="bs-toolbar-btn" aria-pressed="false" aria-label="Underline" title="Underline"><u>U</u></button>
+  <div class="bs-toolbar-divider" role="separator"></div>
+  <button class="bs-toolbar-btn" aria-label="Align left" title="Align left">≡</button>
+  <button class="bs-toolbar-btn bs-active" aria-pressed="true" aria-label="Align center" title="Align center">☰</button>
+  <button class="bs-toolbar-btn" aria-label="Align right" title="Align right">≡</button>
+  <div class="bs-toolbar-divider" role="separator"></div>
+  <button class="bs-toolbar-btn" aria-label="Insert link" title="Insert link">🔗</button>
+  <button class="bs-toolbar-btn" aria-label="Insert image" title="Insert image">🖼</button>
+</div>
+```
+
+#### Action Bar (HTML)
+
+```html
+<!-- brandsync: Toolbar / Variants / Action Bar | requires: brandsync-tokens -->
+<style>
+.bs-action-bar { display: flex; align-items: center; justify-content: space-between; padding: var(--bs-spacing-150) var(--bs-spacing-250); background: var(--bs-surface-base); border-bottom: 1px solid var(--bs-border-default); }
+.bs-action-bar-left, .bs-action-bar-right { display: flex; align-items: center; gap: var(--bs-spacing-100); }
+.bs-page-title { font-size: var(--bs-font-size-lg); font-weight: 700; color: var(--bs-text-default); }
+.bs-btn { display: flex; align-items: center; gap: var(--bs-spacing-75); padding: var(--bs-spacing-75) var(--bs-spacing-150); border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-sm); font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.bs-15s; }
+.bs-btn-primary { background: var(--bs-color-primary-default); color: var(--bs-text-inverse); border: none; }
+.bs-btn-primary:hover { background: var(--bs-color-primary-hover); }
+.bs-btn-ghost { background: none; color: var(--bs-text-default); border: 1px solid var(--bs-border-default); }
+.bs-btn-ghost:hover { background: var(--bs-surface-hover); }
+.bs-btn:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); outline-offset: 2px; }
+.bs-icon-btn { width: var(--bs-spacing-400); height: var(--bs-spacing-400); display: flex; align-items: center; justify-content: center; background: none; border: 1px solid var(--bs-border-default); border-radius: var(--bs-border-radius-100); cursor: pointer; color: var(--bs-icon-default); font-size: var(--bs-font-size-md); }
+.bs-icon-btn:hover { background: var(--bs-surface-hover); }
+.bs-icon-btn:focus-visible { outline: 2px solid var(--bs-border-neutral-focus); }
+</style>
+<div class="bs-action-bar" role="toolbar" aria-label="Page actions">
+  <div class="bs-action-bar-left">
+    <span class="bs-page-title">Components</span>
+  </div>
+  <div class="bs-action-bar-right">
+    <button class="bs-icon-btn" aria-label="Filter">⚙</button>
+    <button class="bs-icon-btn" aria-label="Search">🔍</button>
+    <button class="bs-btn bs-btn-ghost">Import</button>
+    <button class="bs-btn bs-btn-primary">+ New component</button>
+  </div>
+</div>
+```

@@ -1,0 +1,100 @@
+<!--
+  BrandSync Component: Select
+  Select menus allow users to choose one option from a dropdown list. Use when there are 5+ options and showing all at once would take too much space.
+
+  Variants: Default, Error, Disabled
+  Design tokens used: --bs-spacing-75, --bs-font-size-sm, --bs-text-default, --bs-spacing-100, --bs-spacing-500, --bs-spacing-150, --bs-border-default, --bs-border-radius-100, --bs-font-size-md, --bs-surface-base, --bs-border-primary-focus, --bs-color-primary-default, --bs-surface-action-disabled, --bs-text-on-disabled, --bs-icon-muted, --bs-border-error, --bs-font-size-xs, --bs-text-error, --bs-text-muted
+  CSS classes: bs-field, bs-select-wrapper, bs-select-arrow, bs-error-msg, bs-helper
+  Total examples: 3
+-->
+
+<!-- Group: Variants -->
+
+<!--
+  Variant: Default
+  Framework: HTML
+  Tokens: --bs-spacing-75, --bs-font-size-sm, --bs-text-default, --bs-spacing-100, --bs-spacing-500, --bs-spacing-150, --bs-border-default, --bs-border-radius-100, --bs-font-size-md, --bs-surface-base, --bs-border-primary-focus, --bs-color-primary-default, --bs-surface-action-disabled, --bs-text-on-disabled, --bs-icon-muted
+  Classes: bs-field, bs-select-wrapper, bs-select-arrow
+-->
+<!-- brandsync: Select / Variants / Default | requires: brandsync-tokens -->
+<style>
+.bs-field { display: flex; flex-direction: column; gap: var(--bs-spacing-75); width: 280px; }
+label { font-size: var(--bs-font-size-sm); font-weight: 600; color: var(--bs-text-default); }
+.bs-select-wrapper { position: relative; }
+select { width: 100%; padding: var(--bs-spacing-100) var(--bs-spacing-500) var(--bs-spacing-100) var(--bs-spacing-150); border: 1px solid var(--bs-border-default); border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-md); color: var(--bs-text-default); background: var(--bs-surface-base); font-family: inherit; appearance: none; cursor: pointer; line-height: 1.bs-5; }
+select:focus { outline: 2px solid var(--bs-border-primary-focus); border-color: var(--bs-color-primary-default); }
+select:disabled { background: var(--bs-surface-action-disabled); color: var(--bs-text-on-disabled); cursor: not-allowed; }
+.bs-select-arrow { position: absolute; right: var(--bs-spacing-150); top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--bs-icon-muted); font-size: var(--bs-font-size-sm); }
+</style>
+<div class="bs-field">
+  <label for="country-select">Country</label>
+  <div class="bs-select-wrapper">
+    <select id="country-select" name="country">
+      <option value="" disabled selected>Select a country</option>
+      <option value="us">United States</option>
+      <option value="uk">United Kingdom</option>
+      <option value="ca">Canada</option>
+      <option value="au">Australia</option>
+      <option value="de">Germany</option>
+    </select>
+    <span class="bs-select-arrow" aria-hidden="true">▾</span>
+  </div>
+</div>
+
+<!-- Group: States -->
+
+<!--
+  Variant: Error
+  Framework: HTML
+  Tokens: --bs-spacing-75, --bs-font-size-sm, --bs-text-default, --bs-spacing-100, --bs-spacing-500, --bs-spacing-150, --bs-border-error, --bs-border-radius-100, --bs-font-size-md, --bs-surface-base, --bs-icon-muted, --bs-font-size-xs, --bs-text-error
+  Classes: bs-field, bs-select-wrapper, bs-select-arrow, bs-error-msg
+-->
+<!-- brandsync: Select / States / Error | requires: brandsync-tokens -->
+<style>
+.bs-field { display: flex; flex-direction: column; gap: var(--bs-spacing-75); width: 280px; }
+label { font-size: var(--bs-font-size-sm); font-weight: 600; color: var(--bs-text-default); }
+.bs-select-wrapper { position: relative; }
+select { width: 100%; padding: var(--bs-spacing-100) var(--bs-spacing-500) var(--bs-spacing-100) var(--bs-spacing-150); border: 1px solid var(--bs-border-error); border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-md); color: var(--bs-text-default); background: var(--bs-surface-base); font-family: inherit; appearance: none; cursor: pointer; }
+select:focus { outline: 2px solid var(--bs-border-error); }
+.bs-select-arrow { position: absolute; right: var(--bs-spacing-150); top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--bs-icon-muted); font-size: var(--bs-font-size-sm); }
+.bs-error-msg { font-size: var(--bs-font-size-xs); color: var(--bs-text-error); display: flex; align-items: center; gap: var(--bs-spacing-75); }
+</style>
+<div class="bs-field">
+  <label for="role-select">Role</label>
+  <div class="bs-select-wrapper">
+    <select id="role-select" name="role" aria-invalid="true" aria-describedby="role-error">
+      <option value="" disabled selected>Select a role</option>
+      <option value="designer">Designer</option>
+      <option value="engineer">Engineer</option>
+      <option value="pm">Product Manager</option>
+    </select>
+    <span class="bs-select-arrow" aria-hidden="true">▾</span>
+  </div>
+  <span class="bs-error-msg" id="role-error" role="alert"><span aria-hidden="true">⚠</span> Please select a role</span>
+</div>
+
+<!--
+  Variant: Disabled
+  Framework: HTML
+  Tokens: --bs-spacing-75, --bs-font-size-sm, --bs-text-on-disabled, --bs-spacing-100, --bs-spacing-500, --bs-spacing-150, --bs-border-default, --bs-border-radius-100, --bs-font-size-md, --bs-surface-action-disabled, --bs-icon-muted, --bs-font-size-xs, --bs-text-muted
+  Classes: bs-field, bs-select-wrapper, bs-select-arrow, bs-helper
+-->
+<!-- brandsync: Select / States / Disabled | requires: brandsync-tokens -->
+<style>
+.bs-field { display: flex; flex-direction: column; gap: var(--bs-spacing-75); width: 280px; }
+label { font-size: var(--bs-font-size-sm); font-weight: 600; color: var(--bs-text-on-disabled); }
+.bs-select-wrapper { position: relative; }
+select:disabled { width: 100%; padding: var(--bs-spacing-100) var(--bs-spacing-500) var(--bs-spacing-100) var(--bs-spacing-150); border: 1px solid var(--bs-border-default); border-radius: var(--bs-border-radius-100); font-size: var(--bs-font-size-md); color: var(--bs-text-on-disabled); background: var(--bs-surface-action-disabled); font-family: inherit; appearance: none; cursor: not-allowed; opacity: 1; }
+.bs-select-arrow { position: absolute; right: var(--bs-spacing-150); top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--bs-icon-muted); font-size: var(--bs-font-size-sm); }
+.bs-helper { font-size: var(--bs-font-size-xs); color: var(--bs-text-muted); }
+</style>
+<div class="bs-field">
+  <label for="disabled-select">Region (disabled)</label>
+  <div class="bs-select-wrapper">
+    <select id="disabled-select" disabled aria-disabled="true">
+      <option>Europe</option>
+    </select>
+    <span class="bs-select-arrow" aria-hidden="true">▾</span>
+  </div>
+  <span class="bs-helper">Region is set by your account.</span>
+</div>

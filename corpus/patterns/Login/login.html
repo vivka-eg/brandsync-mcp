@@ -1,0 +1,258 @@
+<!--
+  BrandSync UI Pattern: Login
+  Category: auth
+  Use case: User authentication entry point. Use when a product requires email/password login,
+            SSO sign-in, or any screen where a user must identify themselves before accessing the app.
+  Responsive: Desktop, Tablet, Mobile
+
+  Components used:
+    - Input Fields (email, password, name)
+    - Buttons (Primary: Sign In, Neutral: Sign In with SSO)
+    - Checkbox (Remember Password)
+    - Links (Forgot Password, Sign Up)
+    - Card (login form container)
+
+  Design tokens used:
+    --surface-base, --text-default, --font-family-body,
+    --border-primary-focus, --border-width-medium, --spacing-25
+
+  Layout: Two-column split — decorative image left, form right.
+          On mobile collapses to single-column form only.
+
+  States: Default, Loading (submit), Error (invalid credentials)
+  Dark mode: Supported via data-theme="dark"
+
+  Related patterns: Personal Details (post-login profile), Dashboard (post-login landing)
+  Tags: authentication, login, signin, form, password, email, SSO
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Back - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../_tokens.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <!-- Floating Theme Toggle -->
+    <button class="theme-toggle-floating" aria-label="Toggle theme">
+        <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <div class="login-container">
+        <!-- Left Side - Image -->
+        <div class="login-image">
+            <img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?w=800&q=80" alt="Plant decoration">
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="login-form-container">
+            <div class="login-form">
+                <!-- Logo -->
+                <div class="logo">
+                    <div class="logo-container">
+                        <div class="logo-square logo-square-top"></div>
+                        <div class="logo-square logo-square-bottom"></div>
+                    </div>
+                </div>
+
+                <!-- Header -->
+                <div class="login-header">
+                    <h1 class="login-title">Welcome Back</h1>
+                    <p class="login-subtitle">We're happy to have you back.</p>
+                </div>
+
+                <!-- Form -->
+                <form class="form" role="form" aria-label="Login form">
+                    <!-- Name Field -->
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            Name<span class="required" aria-label="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-input"
+                            placeholder="John Doe"
+                            required
+                            autocomplete="name"
+                            aria-required="true"
+                        >
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            Email<span class="required" aria-label="required">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-input"
+                            placeholder="Eg: john@eg.dk"
+                            required
+                            autocomplete="email"
+                            aria-required="true"
+                        >
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            Password<span class="required" aria-label="required">*</span>
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-input password-input"
+                                placeholder="••••••••"
+                                required
+                                autocomplete="current-password"
+                                aria-required="true"
+                                aria-describedby="password-toggle-btn"
+                            >
+                            <button type="button" id="password-toggle-btn" class="password-toggle" aria-label="Show password" aria-pressed="false">
+                                <!-- Eye Open Icon - Shown when password is hidden -->
+                                <svg class="eye-icon eye-open" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="currentColor"/>
+                                </svg>
+                                <!-- Eye Closed Icon - Shown when password is visible -->
+                                <svg class="eye-icon eye-closed hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 7C14.76 7 17 9.24 17 12C17 12.65 16.87 13.26 16.64 13.83L19.56 16.75C21.07 15.49 22.26 13.86 23 12C21.27 7.61 17 4.5 12 4.5C10.6 4.5 9.26 4.75 8.04 5.2L10.17 7.33C10.74 7.13 11.35 7 12 7ZM2 4.27L4.28 6.55L4.74 7.01C3.08 8.3 1.78 10.02 1 12C2.73 16.39 7 19.5 12 19.5C13.55 19.5 15.03 19.2 16.38 18.66L16.8 19.08L19.73 22L21 20.73L3.27 3L2 4.27ZM7.53 9.8L9.08 11.35C9.03 11.56 9 11.78 9 12C9 13.66 10.34 15 12 15C12.22 15 12.44 14.97 12.65 14.92L14.2 16.47C13.53 16.8 12.79 17 12 17C9.24 17 7 14.76 7 12C7 11.21 7.2 10.47 7.53 9.8ZM11.84 9.02L14.99 12.17L15.01 12.01C15.01 10.35 13.67 9.01 12.01 9.01L11.84 9.02Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Password & Forgot Password -->
+                    <div class="form-options">
+                        <div class="checkbox-wrapper">
+                            <input type="checkbox" id="remember" class="checkbox">
+                            <label for="remember" class="checkbox-label">Remember Password</label>
+                        </div>
+                        <a href="#" class="forgot-password-link">Forgot Password</a>
+                    </div>
+
+                    <!-- Sign In Button -->
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+
+                    <!-- Sign In with SSO Button -->
+                    <button type="button" class="btn btn-neutral">
+                        Sign In with SSO
+                    </button>
+
+                    <!-- Sign Up Link -->
+                    <p class="signup-text">
+                        Don't have an account? <a href="#" class="signup-link">Sign Up</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme switching functionality
+        const themeToggle = document.querySelector('.theme-toggle-floating');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', currentTheme);
+
+        // Theme toggle handler
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Password toggle functionality
+        const passwordToggle = document.querySelector('.password-toggle');
+        const passwordInput = document.getElementById('password');
+        const eyeOpen = document.querySelector('.eye-open');
+        const eyeClosed = document.querySelector('.eye-closed');
+        const form = document.querySelector('.form');
+
+        function togglePasswordVisibility() {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+
+            // Toggle icon visibility
+            eyeOpen.classList.toggle('hidden');
+            eyeClosed.classList.toggle('hidden');
+
+            // Update ARIA attributes
+            passwordToggle.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            passwordToggle.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+        }
+
+        // Click handler
+        passwordToggle.addEventListener('click', togglePasswordVisibility);
+
+        // Keyboard handler for password toggle
+        passwordToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                togglePasswordVisibility();
+            }
+        });
+
+        // Form submission handler
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            // Form validation
+            if (!name || !email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Here you would typically submit to your backend
+            console.log('Form submitted:', { name, email, password, remember });
+            alert('Login functionality would be implemented here');
+        });
+
+        // Keyboard navigation: Focus first input on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('name').focus();
+        });
+
+        // Escape key to clear form
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (confirm('Clear form?')) {
+                    form.reset();
+                    document.getElementById('name').focus();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

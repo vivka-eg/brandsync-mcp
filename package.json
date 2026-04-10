@@ -10,7 +10,12 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "build:corpus": "npx tsx scripts/build-corpus.ts",
+    "build:tokens-css": "npx tsx scripts/build-tokens-css.ts",
+    "patch:graph": "python3 scripts/patch-graph-sizes.py",
+    "build:graph": "npm run build:corpus && npm run patch:graph",
+    "postinstall": "npm run build:tokens-css --silent && git config core.hooksPath .githooks 2>/dev/null || true"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",

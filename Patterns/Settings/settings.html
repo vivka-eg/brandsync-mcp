@@ -1,0 +1,428 @@
+<!--
+  BrandSync UI Pattern: Settings Page
+  Category: settings, admin, form
+  Use case: Application or account settings screen. Two-column layout: left settings category
+            nav (tabs/menu) + right form content area. Covers personal profile, notification
+            preferences, security, billing, and organisation sections. Use for any settings or
+            preferences screen in back-office and enterprise applications.
+  Responsive: Desktop, Tablet, Mobile
+
+  Components used:
+    - Navigation Drawer (collapsible left app sidebar)
+    - Settings Nav (secondary left nav — categories list)
+    - Tabs (header tabs for top-level context switching)
+    - Input Fields (text, email, password)
+    - Select / Dropdown (language, timezone)
+    - Toggle Switch (notification preferences, feature flags)
+    - Buttons (Primary: Save, Secondary: Cancel, Danger: Delete account)
+    - Avatar (user profile photo area with upload action)
+    - Divider (section separators)
+    - Card / Section (form groups)
+    - Badge (plan status chip)
+
+  Design tokens used:
+    --surface-base, --surface-container, --surface-hover, --surface-pressed,
+    --surface-selected, --surface-raised,
+    --text-default, --text-secondary, --text-muted, --text-on-action,
+    --icon-secondary, --icon-muted,
+    --border-default, --border-primary-focus, --border-width-thin, --border-width-medium,
+    --border-radius-50, --border-radius-100, --border-radius-150, --border-radius-full,
+    --color-primary-default, --color-primary-hover, --color-primary-pressed,
+    --color-error-default,
+    --font-family-body, --font-family-heading,
+    --font-size-small, --font-size-large,
+    --font-weight-regular, --font-weight-medium, --font-weight-semibold, --font-weight-bold,
+    --spacing-25, --spacing-75, --spacing-100, --spacing-150, --spacing-200, --spacing-300, --spacing-400
+
+  Layout: App shell (sidebar + main wrapper). Main: sticky top-header with page title.
+          Two-column body: fixed settings category nav (left, 220px) + scrollable form content (right).
+
+  States: Default (profile section active), Saved success toast, Unsaved changes warning,
+          Danger zone (delete confirmation)
+  Dark mode: Supported via data-theme="dark"
+
+  Related patterns: Dashboard (entry from sidebar nav), Form (shared form field patterns),
+                    Personal Details (profile view), User Management (admin variant)
+  Tags: settings, preferences, profile, account, form, toggle, admin, two-column
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - EG BrandSync</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../_tokens.css">
+    <link rel="stylesheet" href="settings.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<div class="app-layout">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-mark">
+                    <div class="logo-sq logo-sq-top"></div>
+                    <div class="logo-sq logo-sq-bottom"></div>
+                </div>
+                <span class="logo-text">EG BrandSync</span>
+            </div>
+        </div>
+        <div class="plan-row">
+            <span class="plan-text">Basic Plan | Monthly</span>
+            <button class="icon-btn" id="collapseBtn" aria-label="Collapse sidebar">
+                <i data-lucide="chevron-left" width="16" height="16" class="chevron-icon"></i>
+            </button>
+        </div>
+        <hr class="sidebar-divider">
+        <nav class="sidebar-nav" aria-label="Main navigation">
+            <a href="#" class="nav-item">
+                <i data-lucide="layout-grid" class="nav-icon"></i>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="map-pin" class="nav-icon"></i>
+                <span class="nav-label">Locations</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="users" class="nav-icon"></i>
+                <span class="nav-label">User Management</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="file-text" class="nav-icon"></i>
+                <span class="nav-label">Documents</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="alert-triangle" class="nav-icon"></i>
+                <span class="nav-label">Risk Assessment</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="network" class="nav-icon"></i>
+                <span class="nav-label">Organisation Structure</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="refresh-cw" class="nav-icon"></i>
+                <span class="nav-label">Process Maps</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <nav aria-label="Secondary navigation">
+                <a href="#" class="nav-item">
+                    <i data-lucide="languages" class="nav-icon"></i>
+                    <span class="nav-label">Language</span>
+                </a>
+                <a href="#" class="nav-item active" aria-current="page">
+                    <i data-lucide="settings" class="nav-icon"></i>
+                    <span class="nav-label">Settings</span>
+                </a>
+            </nav>
+            <hr class="sidebar-divider">
+            <a href="#" class="user-profile">
+                <div class="avatar">SL</div>
+                <div class="user-info">
+                    <span class="user-name">User Name</span>
+                    <span class="user-email">user@example.com</span>
+                </div>
+                <i data-lucide="chevron-right" width="16" height="16" class="user-chevron"></i>
+            </a>
+        </div>
+    </aside>
+
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- ===== Main Content ===== -->
+    <div class="main-wrapper">
+
+        <header class="top-header">
+            <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+                <i data-lucide="menu" width="20" height="20"></i>
+            </button>
+            <div class="page-title-header">Settings</div>
+            <div class="header-actions">
+                <div class="avatar avatar-sm">SL</div>
+            </div>
+        </header>
+
+        <div class="settings-body">
+
+            <!-- Settings Category Nav -->
+            <nav class="settings-nav" aria-label="Settings sections">
+                <a href="#profile" class="settings-nav-item active">
+                    <i data-lucide="user" width="16" height="16"></i>
+                    Profile
+                </a>
+                <a href="#notifications" class="settings-nav-item">
+                    <i data-lucide="bell" width="16" height="16"></i>
+                    Notifications
+                </a>
+                <a href="#security" class="settings-nav-item">
+                    <i data-lucide="shield" width="16" height="16"></i>
+                    Security
+                </a>
+                <a href="#billing" class="settings-nav-item">
+                    <i data-lucide="credit-card" width="16" height="16"></i>
+                    Billing
+                </a>
+                <a href="#organisation" class="settings-nav-item">
+                    <i data-lucide="building-2" width="16" height="16"></i>
+                    Organisation
+                </a>
+                <a href="#integrations" class="settings-nav-item">
+                    <i data-lucide="plug" width="16" height="16"></i>
+                    Integrations
+                </a>
+            </nav>
+
+            <!-- Settings Content -->
+            <main class="settings-content">
+
+                <!-- Profile Section -->
+                <section class="settings-section" id="profile">
+                    <div class="section-header">
+                        <h2 class="section-title">Profile</h2>
+                        <p class="section-desc">Update your personal information and profile photo.</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <!-- Avatar upload -->
+                        <div class="form-row avatar-row">
+                            <div class="form-label-col">
+                                <label class="field-label">Profile photo</label>
+                                <span class="field-hint">JPG or PNG, max 2 MB</span>
+                            </div>
+                            <div class="form-control-col avatar-upload">
+                                <div class="avatar avatar-lg">SL</div>
+                                <div class="avatar-actions">
+                                    <button class="btn btn-outline btn-sm">Upload photo</button>
+                                    <button class="btn btn-ghost btn-sm">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="firstName">First name</label>
+                            </div>
+                            <div class="form-control-col">
+                                <input type="text" id="firstName" class="text-input" value="Sofie">
+                            </div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="lastName">Last name</label>
+                            </div>
+                            <div class="form-control-col">
+                                <input type="text" id="lastName" class="text-input" value="Larsen">
+                            </div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="email">Email address</label>
+                                <span class="field-hint">Used for login and notifications</span>
+                            </div>
+                            <div class="form-control-col">
+                                <input type="email" id="email" class="text-input" value="sofie.larsen@eg.dk">
+                            </div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="language">Language</label>
+                            </div>
+                            <div class="form-control-col">
+                                <div class="select-wrap">
+                                    <select id="language" class="field-select">
+                                        <option value="en" selected>English</option>
+                                        <option value="da">Danish</option>
+                                        <option value="de">German</option>
+                                        <option value="sv">Swedish</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" width="14" height="14" class="select-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="form-divider">
+
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="timezone">Timezone</label>
+                            </div>
+                            <div class="form-control-col">
+                                <div class="select-wrap">
+                                    <select id="timezone" class="field-select">
+                                        <option value="cet" selected>Central European Time (CET)</option>
+                                        <option value="utc">UTC</option>
+                                        <option value="gmt">GMT</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" width="14" height="14" class="select-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button class="btn btn-ghost btn-sm">Cancel</button>
+                            <button class="btn btn-primary btn-sm">Save changes</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notifications Section -->
+                <section class="settings-section" id="notifications">
+                    <div class="section-header">
+                        <h2 class="section-title">Notifications</h2>
+                        <p class="section-desc">Choose how and when you receive notifications.</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="field-label">Email notifications</span>
+                                <span class="field-hint">Receive activity summaries and alerts via email</span>
+                            </div>
+                            <label class="toggle" aria-label="Toggle email notifications">
+                                <input type="checkbox" checked>
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            </label>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="field-label">Risk alerts</span>
+                                <span class="field-hint">Get notified immediately when a high-risk item is flagged</span>
+                            </div>
+                            <label class="toggle" aria-label="Toggle risk alerts">
+                                <input type="checkbox" checked>
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            </label>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="field-label">Weekly digest</span>
+                                <span class="field-hint">A summary of all activity sent every Monday morning</span>
+                            </div>
+                            <label class="toggle" aria-label="Toggle weekly digest">
+                                <input type="checkbox">
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            </label>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="field-label">Product updates</span>
+                                <span class="field-hint">News about new features and improvements</span>
+                            </div>
+                            <label class="toggle" aria-label="Toggle product updates">
+                                <input type="checkbox">
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            </label>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-sm">Save preferences</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Security Section -->
+                <section class="settings-section" id="security">
+                    <div class="section-header">
+                        <h2 class="section-title">Security</h2>
+                        <p class="section-desc">Manage your password and authentication settings.</p>
+                    </div>
+                    <div class="settings-card">
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="currentPwd">Current password</label>
+                            </div>
+                            <div class="form-control-col">
+                                <input type="password" id="currentPwd" class="text-input" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="form-row">
+                            <div class="form-label-col">
+                                <label class="field-label" for="newPwd">New password</label>
+                                <span class="field-hint">Min. 8 characters</span>
+                            </div>
+                            <div class="form-control-col">
+                                <input type="password" id="newPwd" class="text-input" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <hr class="form-divider">
+                        <div class="toggle-row">
+                            <div class="toggle-label-group">
+                                <span class="field-label">Two-factor authentication</span>
+                                <span class="field-hint">Add an extra layer of security to your account</span>
+                            </div>
+                            <label class="toggle" aria-label="Toggle 2FA">
+                                <input type="checkbox">
+                                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                            </label>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-ghost btn-sm">Cancel</button>
+                            <button class="btn btn-primary btn-sm">Update password</button>
+                        </div>
+                    </div>
+
+                    <!-- Danger zone -->
+                    <div class="settings-card danger-card">
+                        <div class="danger-zone">
+                            <div>
+                                <span class="field-label danger-label">Delete account</span>
+                                <span class="field-hint">Permanently delete your account and all associated data. This cannot be undone.</span>
+                            </div>
+                            <button class="btn btn-danger btn-sm">Delete account</button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    const sidebar = document.getElementById('sidebar');
+    const collapseBtn = document.getElementById('collapseBtn');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileOverlay = document.getElementById('mobileOverlay');
+
+    collapseBtn?.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    mobileMenuBtn?.addEventListener('click', () => {
+        sidebar.classList.add('open');
+        mobileOverlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    });
+    mobileOverlay?.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        mobileOverlay.classList.remove('visible');
+        document.body.style.overflow = '';
+    });
+
+    // Settings nav active state
+    document.querySelectorAll('.settings-nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

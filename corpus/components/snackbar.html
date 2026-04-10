@@ -1,0 +1,293 @@
+<!--
+  BrandSync Component: Snackbar
+  Snackbars provide brief feedback about an operation through a message at the bottom of the screen. They can include an optional action.
+
+  Variants: Success, Error, Warning, Info, With Action
+  Design tokens used: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-success, --bs-border-success, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-success, --bs-font-size-sm, --bs-font-size-xs, --bs-font-size-lg, --bs-text-secondary, --bs-spacing-25, --bs-spacing-400, --bs-surface-error, --bs-border-error, --bs-text-error, --bs-surface-warning, --bs-border-warning, --bs-text-warning, --bs-surface-info, --bs-border-info, --bs-text-info, --bs-text-action, --bs-spacing-50, --bs-spacing-100, --bs-border-radius-50, --bs-text-action-hover
+  CSS classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__message, bs-snackbar__close, bs-snackbar__action
+  Total examples: 5
+-->
+
+<!-- Group: Variants -->
+
+<!--
+  Variant: Success
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-success, --bs-border-success, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-success, --bs-font-size-sm, --bs-font-size-xs, --bs-font-size-lg, --bs-text-secondary, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__message, bs-snackbar__close
+-->
+<!-- brandsync: Snackbar / Variants / Success | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-snackbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-150);
+    padding: var(--bs-spacing-150) var(--bs-spacing-200);
+    border-radius: var(--bs-border-radius-100);
+    background: var(--bs-surface-success);
+    border: 1px solid var(--bs-border-success);
+    min-width: 280px;
+    max-width: 480px;
+    box-shadow: var(--bs-shadow-elevation-xs);
+  }
+  .bs-snackbar__icon {
+    width: var(--bs-font-size-xl);
+    height: var(--bs-font-size-xl);
+    color: var(--bs-text-success);
+    flex-shrink: 0;
+  }
+  .bs-snackbar__content { flex: 1; }
+  .bs-snackbar__title {
+    font-size: var(--bs-font-size-sm);
+    font-weight: 500;
+    line-height: var(--bs-font-size-xl);
+    color: var(--bs-text-success);
+  }
+  .bs-snackbar__message {
+    font-size: var(--bs-font-size-xs);
+    line-height: var(--bs-font-size-lg);
+    color: var(--bs-text-secondary);
+    margin-top: var(--bs-spacing-25);
+  }
+  .bs-snackbar__close {
+    width: var(--bs-font-size-xl);
+    height: var(--bs-font-size-xl);
+    color: var(--bs-text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <div class="bs-snackbar">
+    <svg class="bs-snackbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <div class="bs-snackbar__content">
+      <div class="bs-snackbar__title">Changes saved</div>
+      <div class="bs-snackbar__message">Your changes have been saved successfully.</div>
+    </div>
+    <button class="bs-snackbar__close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</body>
+</html>
+
+<!--
+  Variant: Error
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-error, --bs-border-error, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-error, --bs-font-size-sm, --bs-font-size-xs, --bs-font-size-lg, --bs-text-secondary, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__message, bs-snackbar__close
+-->
+<!-- brandsync: Snackbar / Variants / Error | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-snackbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-150);
+    padding: var(--bs-spacing-150) var(--bs-spacing-200);
+    border-radius: var(--bs-border-radius-100);
+    background: var(--bs-surface-error);
+    border: 1px solid var(--bs-border-error);
+    min-width: 280px;
+    max-width: 480px;
+    box-shadow: var(--bs-shadow-elevation-xs);
+  }
+  .bs-snackbar__icon { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-error); flex-shrink: 0; }
+  .bs-snackbar__content { flex: 1; }
+  .bs-snackbar__title { font-size: var(--bs-font-size-sm); font-weight: 500; line-height: var(--bs-font-size-xl); color: var(--bs-text-error); }
+  .bs-snackbar__message { font-size: var(--bs-font-size-xs); line-height: var(--bs-font-size-lg); color: var(--bs-text-secondary); margin-top: var(--bs-spacing-25); }
+  .bs-snackbar__close { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-secondary); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 0; }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <div class="bs-snackbar">
+    <svg class="bs-snackbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <div class="bs-snackbar__content">
+      <div class="bs-snackbar__title">Something went wrong</div>
+      <div class="bs-snackbar__message">Please try again or contact support.</div>
+    </div>
+    <button class="bs-snackbar__close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</body>
+</html>
+
+<!--
+  Variant: Warning
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-warning, --bs-border-warning, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-warning, --bs-font-size-sm, --bs-font-size-xs, --bs-font-size-lg, --bs-text-secondary, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__message, bs-snackbar__close
+-->
+<!-- brandsync: Snackbar / Variants / Warning | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-snackbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-150);
+    padding: var(--bs-spacing-150) var(--bs-spacing-200);
+    border-radius: var(--bs-border-radius-100);
+    background: var(--bs-surface-warning);
+    border: 1px solid var(--bs-border-warning);
+    min-width: 280px;
+    max-width: 480px;
+    box-shadow: var(--bs-shadow-elevation-xs);
+  }
+  .bs-snackbar__icon { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-warning); flex-shrink: 0; }
+  .bs-snackbar__content { flex: 1; }
+  .bs-snackbar__title { font-size: var(--bs-font-size-sm); font-weight: 500; line-height: var(--bs-font-size-xl); color: var(--bs-text-warning); }
+  .bs-snackbar__message { font-size: var(--bs-font-size-xs); line-height: var(--bs-font-size-lg); color: var(--bs-text-secondary); margin-top: var(--bs-spacing-25); }
+  .bs-snackbar__close { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-secondary); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 0; }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <div class="bs-snackbar">
+    <svg class="bs-snackbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+    <div class="bs-snackbar__content">
+      <div class="bs-snackbar__title">Session expiring soon</div>
+      <div class="bs-snackbar__message">You will be logged out in 5 minutes.</div>
+    </div>
+    <button class="bs-snackbar__close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</body>
+</html>
+
+<!--
+  Variant: Info
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-info, --bs-border-info, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-info, --bs-font-size-sm, --bs-font-size-xs, --bs-font-size-lg, --bs-text-secondary, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__message, bs-snackbar__close
+-->
+<!-- brandsync: Snackbar / Variants / Info | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-snackbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-150);
+    padding: var(--bs-spacing-150) var(--bs-spacing-200);
+    border-radius: var(--bs-border-radius-100);
+    background: var(--bs-surface-info);
+    border: 1px solid var(--bs-border-info);
+    min-width: 280px;
+    max-width: 480px;
+    box-shadow: var(--bs-shadow-elevation-xs);
+  }
+  .bs-snackbar__icon { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-info); flex-shrink: 0; }
+  .bs-snackbar__content { flex: 1; }
+  .bs-snackbar__title { font-size: var(--bs-font-size-sm); font-weight: 500; line-height: var(--bs-font-size-xl); color: var(--bs-text-info); }
+  .bs-snackbar__message { font-size: var(--bs-font-size-xs); line-height: var(--bs-font-size-lg); color: var(--bs-text-secondary); margin-top: var(--bs-spacing-25); }
+  .bs-snackbar__close { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-secondary); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 0; }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <div class="bs-snackbar">
+    <svg class="bs-snackbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/>
+    </svg>
+    <div class="bs-snackbar__content">
+      <div class="bs-snackbar__title">New version available</div>
+      <div class="bs-snackbar__message">Refresh the page to get the latest updates.</div>
+    </div>
+    <button class="bs-snackbar__close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</body>
+</html>
+
+<!--
+  Variant: With Action
+  Framework: HTML
+  Tokens: --bs-spacing-150, --bs-spacing-200, --bs-border-radius-100, --bs-surface-info, --bs-border-info, --bs-shadow-elevation-xs, --bs-font-size-xl, --bs-text-info, --bs-font-size-sm, --bs-font-size-xs, --bs-text-action, --bs-spacing-50, --bs-spacing-100, --bs-border-radius-50, --bs-text-action-hover, --bs-text-secondary, --bs-spacing-400
+  Classes: bs-snackbar, bs-snackbar__icon, bs-snackbar__content, bs-snackbar__title, bs-snackbar__action, bs-snackbar__close
+-->
+<!-- brandsync: Snackbar / Variants / With Action | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-snackbar {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-150);
+    padding: var(--bs-spacing-150) var(--bs-spacing-200);
+    border-radius: var(--bs-border-radius-100);
+    background: var(--bs-surface-info);
+    border: 1px solid var(--bs-border-info);
+    min-width: 280px;
+    max-width: 480px;
+    box-shadow: var(--bs-shadow-elevation-xs);
+  }
+  .bs-snackbar__icon { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-info); flex-shrink: 0; }
+  .bs-snackbar__content { flex: 1; }
+  .bs-snackbar__title { font-size: var(--bs-font-size-sm); font-weight: 500; line-height: var(--bs-font-size-xl); color: var(--bs-text-info); }
+  .bs-snackbar__action {
+    font-size: var(--bs-font-size-xs);
+    font-weight: 500;
+    color: var(--bs-text-action);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--bs-spacing-50) var(--bs-spacing-100);
+    border-radius: var(--bs-border-radius-50);
+    flex-shrink: 0;
+    text-decoration: underline;
+  }
+  .bs-snackbar__action:hover { color: var(--bs-text-action-hover); }
+  .bs-snackbar__close { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); color: var(--bs-text-secondary); cursor: pointer; flex-shrink: 0; background: none; border: none; padding: 0; }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <div class="bs-snackbar">
+    <svg class="bs-snackbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/>
+    </svg>
+    <div class="bs-snackbar__content">
+      <div class="bs-snackbar__title">Item moved to trash</div>
+    </div>
+    <button class="bs-snackbar__action">Undo</button>
+    <button class="bs-snackbar__close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</body>
+</html>

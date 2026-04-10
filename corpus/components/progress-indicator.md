@@ -1,0 +1,205 @@
+# Progress Indicator
+
+**Type:** UI Component
+**Source:** BrandSync Design System (Strapi)
+
+## Description
+
+Progress indicators show the completion status of a task or process.
+
+## Variants
+
+- Determinate
+
+## Frameworks
+
+- HTML
+
+## Design Tokens
+
+- `--bs-spacing-50`
+- `--bs-font-size-md`
+- `--bs-font-size-2xl`
+- `--bs-text-default`
+- `--bs-border-radius-full`
+- `--bs-color-neutral-container`
+- `--bs-spacing-100`
+- `--bs-color-primary-default`
+- `--bs-color-success-default`
+- `--bs-font-size-sm`
+- `--bs-font-size-xl`
+- `--bs-text-secondary`
+- `--bs-spacing-600`
+
+## CSS Classes
+
+- `bs-progress-wrap`
+- `bs-progress-label`
+- `bs-progress-track`
+- `bs-progress-track--lg`
+- `bs-progress-fill`
+- `bs-progress-fill--success`
+- `bs-progress-fill--indeterminate`
+- `bs-progress-track--sm`
+- `bs-progress-circular`
+- `progress-circular--`
+- `bs-progress-circular__track`
+- `bs-progress-circular__fill`
+- `bs-progress-circular__label`
+- `bs-progress-circular--sm`
+
+## Code Examples
+
+### Linear
+
+#### Determinate (HTML)
+
+```html
+<!-- brandsync: Progress Indicator / Linear / Determinate | requires: brandsync-tokens -->
+<style>
+.bs-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-spacing-50);
+  width: 100%;
+  max-width: 360px;
+  font-family: inherit;
+}
+.bs-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--bs-font-size-md);
+  line-height: var(--bs-font-size-2xl);
+  color: var(--bs-text-default);
+}
+/* Linear */
+.bs-progress-track {
+  width: 100%;
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-color-neutral-container);
+  overflow: hidden;
+}
+.bs-progress-track--lg { height: var(--bs-spacing-100); }
+.bs-progress-track--sm { height: var(--bs-spacing-50); }
+.bs-progress-fill {
+  height: 100%;
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-color-primary-default);
+  transition: width 0.bs-4s ease;
+}
+.bs-progress-fill--success { background: var(--bs-color-success-default); }
+.bs-progress-fill--indeterminate {
+  width: 40% !important;
+  animation: indeterminate 1.bs-4s infinite ease-in-out;
+}
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(360%); }
+}
+/* Circular */
+.bs-progress-circular {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-progress-circular svg { transform: rotate(-90deg); }
+.bs-progress-circular__track { fill: none; stroke: var(--bs-color-neutral-container); }
+.bs-progress-circular__fill {
+  fill: none;
+  stroke: var(--bs-color-primary-default);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.bs-4s ease;
+}
+.bs-progress-circular__label {
+  position: absolute;
+  font-size: var(--bs-font-size-sm);
+  font-weight: 600;
+  line-height: var(--bs-font-size-xl);
+  color: var(--bs-text-default);
+}
+.bs-progress-circular--sm .bs-progress-circular__label {
+  font-weight: 400;
+}
+</style>
+<div style="display:flex;flex-direction:column;gap:32px;width:100%;">
+<div class="bs-progress-wrap"><div class="bs-progress-label"><span>Large — 75%</span><span>75%</span></div><div class="bs-progress-track bs-progress-track--lg"><div class="bs-progress-fill" style="width:75%"></div></div></div><div class="bs-progress-wrap"><div class="bs-progress-label"><span>Large — Success</span><span>100%</span></div><div class="bs-progress-track bs-progress-track--lg"><div class="bs-progress-fill bs-progress-fill--success" style="width:100%"></div></div></div><div class="bs-progress-wrap"><div class="bs-progress-label"><span>Large — Indeterminate</span><span></span></div><div class="bs-progress-track bs-progress-track--lg"><div class="bs-progress-fill bs-progress-fill--indeterminate bs-progress-fill--indeterminate" ></div></div></div><div class="bs-progress-wrap"><div class="bs-progress-label"><span>Small — 40%</span><span>40%</span></div><div class="bs-progress-track bs-progress-track--sm"><div class="bs-progress-fill" style="width:40%"></div></div></div><div class="bs-progress-wrap"><div class="bs-progress-label"><span>Small — Indeterminate</span><span></span></div><div class="bs-progress-track bs-progress-track--sm"><div class="bs-progress-fill bs-progress-fill--indeterminate bs-progress-fill--indeterminate" ></div></div></div>
+</div>
+```
+
+### Circular
+
+#### Determinate (HTML)
+
+```html
+<!-- brandsync: Progress Indicator / Circular / Determinate | requires: brandsync-tokens -->
+<style>
+.bs-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-spacing-50);
+  width: 100%;
+  max-width: 360px;
+  font-family: inherit;
+}
+.bs-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--bs-font-size-md);
+  line-height: var(--bs-font-size-2xl);
+  color: var(--bs-text-default);
+}
+/* Linear */
+.bs-progress-track {
+  width: 100%;
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-color-neutral-container);
+  overflow: hidden;
+}
+.bs-progress-track--lg { height: var(--bs-spacing-100); }
+.bs-progress-track--sm { height: var(--bs-spacing-50); }
+.bs-progress-fill {
+  height: 100%;
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-color-primary-default);
+  transition: width 0.bs-4s ease;
+}
+.bs-progress-fill--success { background: var(--bs-color-success-default); }
+.bs-progress-fill--indeterminate {
+  width: 40% !important;
+  animation: indeterminate 1.bs-4s infinite ease-in-out;
+}
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(360%); }
+}
+/* Circular */
+.bs-progress-circular {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-progress-circular svg { transform: rotate(-90deg); }
+.bs-progress-circular__track { fill: none; stroke: var(--bs-color-neutral-container); }
+.bs-progress-circular__fill {
+  fill: none;
+  stroke: var(--bs-color-primary-default);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.bs-4s ease;
+}
+.bs-progress-circular__label {
+  position: absolute;
+  font-size: var(--bs-font-size-sm);
+  font-weight: 600;
+  line-height: var(--bs-font-size-xl);
+  color: var(--bs-text-default);
+}
+.bs-progress-circular--sm .bs-progress-circular__label {
+  font-weight: 400;
+}
+</style>
+<div style="display:flex;flex-direction:column;gap:32px;width:100%;">
+<div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-end;"><div style="display:flex;flex-direction:column;align-items:center;gap: var(--bs-spacing-100);"><div class="bs-progress-circular progress-circular--" style="width:80px;height:80px;"><svg width="80" height="80" viewBox="0 0 80 80"><circle class="bs-progress-circular__track" cx="40.0" cy="40.0" r="36.0" stroke-width="8"/><circle class="bs-progress-circular__fill" cx="40.0" cy="40.0" r="36.0" stroke-width="8" stroke-dasharray="226.2" stroke-dashoffset="56.5"/></svg><span class="bs-progress-circular__label">75%</span></div><span style="font-family:inherit;font-size: var(--bs-font-size-sm);color:var(--bs-text-secondary);">Large — 75%</span></div><div style="display:flex;flex-direction:column;align-items:center;gap: var(--bs-spacing-100);"><div class="bs-progress-circular progress-circular--" style="width:80px;height:80px;"><svg width="80" height="80" viewBox="0 0 80 80"><circle class="bs-progress-circular__track" cx="40.0" cy="40.0" r="36.0" stroke-width="8"/><circle class="bs-progress-circular__fill" cx="40.0" cy="40.0" r="36.0" stroke-width="8" stroke-dasharray="226.2" stroke-dashoffset="0.0"/></svg><span class="bs-progress-circular__label">100%</span></div><span style="font-family:inherit;font-size: var(--bs-font-size-sm);color:var(--bs-text-secondary);">Large — 100%</span></div><div style="display:flex;flex-direction:column;align-items:center;gap: var(--bs-spacing-100);"><div class="bs-progress-circular bs-progress-circular--sm" style="width: var(--bs-spacing-600);height: var(--bs-spacing-600);"><svg width="48" height="48" viewBox="0 0 48 48"><circle class="bs-progress-circular__track" cx="24.0" cy="24.0" r="22.0" stroke-width="4"/><circle class="bs-progress-circular__fill" cx="24.0" cy="24.0" r="22.0" stroke-width="4" stroke-dasharray="138.2" stroke-dashoffset="55.3"/></svg><span class="bs-progress-circular__label">60%</span></div><span style="font-family:inherit;font-size: var(--bs-font-size-sm);color:var(--bs-text-secondary);">Small — 60%</span></div><div style="display:flex;flex-direction:column;align-items:center;gap: var(--bs-spacing-100);"><div class="bs-progress-circular bs-progress-circular--sm" style="width: var(--bs-spacing-600);height: var(--bs-spacing-600);"><svg width="48" height="48" viewBox="0 0 48 48"><circle class="bs-progress-circular__track" cx="24.0" cy="24.0" r="22.0" stroke-width="4"/><circle class="bs-progress-circular__fill" cx="24.0" cy="24.0" r="22.0" stroke-width="4" stroke-dasharray="138.2" stroke-dashoffset="103.7"/></svg><span class="bs-progress-circular__label">25%</span></div><span style="font-family:inherit;font-size: var(--bs-font-size-sm);color:var(--bs-text-secondary);">Small — 25%</span></div></div>
+</div>
+```

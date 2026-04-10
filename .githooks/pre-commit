@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# pre-commit: rebuild corpus if Patterns/ or build-corpus script changed.
+# Rebuilt files are staged and included in the same commit.
+#
+# Installed automatically via: npm install (sets core.hooksPath = .githooks)
+
+STAGED=$(git diff --cached --name-only)
+
+if echo "$STAGED" | grep -qE '^Patterns/|^scripts/build-corpus'; then
+  echo "[corpus] Patterns changed — rebuilding corpus and graph..."
+  npm run build:corpus --silent || exit 1
+  npm run patch:graph --silent || true
+  git add corpus/ graphify-out/graph.html
+  echo "[corpus] Done."
+fi

@@ -1,0 +1,283 @@
+/**
+ * BrandSync Pattern Tokens — AUTO-GENERATED, do not edit
+ * Source: brandsync-tokens npm package
+ * Regenerate: npm run build:tokens-css
+ *
+ * Aliases strip the "bs-" prefix so pattern CSS stays readable:
+ *   --bs-color-surface-base  →  --color-surface-base
+ *
+ * For target projects (no _tokens.css), use --bs-* names directly.
+ */
+
+@import '../node_modules/brandsync-tokens/dist/css/tokens.css';
+
+/* ─── Typography (package exports these without --bs- prefix) ───────── */
+:root {
+  --font-family-body:    var(--typography-font-family-body), system-ui, sans-serif;
+  --font-family-heading: var(--typography-font-family-heading), system-ui, sans-serif;
+
+  --font-size-small: var(--font-size-sm);   /* 14px */
+  --font-size-base:  var(--font-size-md);   /* 16px */
+  --font-size-large: var(--font-size-lg);   /* 18px */
+
+  --font-weight-regular:  var(--typography-font-weight-regular);
+  --font-weight-medium:   var(--typography-font-weight-medium);
+  --font-weight-semibold: var(--typography-font-weight-semibold);
+  --font-weight-bold:     var(--typography-font-weight-bold);
+}
+
+/* ─── Semantic aliases — --bs-* stripped to --* ─────────────────────── */
+:root {
+
+  /* Neutral interactive */
+  --color-neutral-default:                       var(--bs-color-neutral-default);
+  --color-neutral-hover:                         var(--bs-color-neutral-hover);
+  --color-neutral-focused:                       var(--bs-color-neutral-focused);
+  --color-neutral-pressed:                       var(--bs-color-neutral-pressed);
+  --color-neutral-container:                     var(--bs-color-neutral-container);
+  --color-neutral-container-hover:               var(--bs-color-neutral-container-hover);
+  --color-neutral-container-focused:             var(--bs-color-neutral-container-focused);
+  --color-neutral-container-pressed:             var(--bs-color-neutral-container-pressed);
+
+  /* Accent */
+  --color-accent-default:                        var(--bs-color-accent-default);
+  --color-accent-hover:                          var(--bs-color-accent-hover);
+  --color-accent-active:                         var(--bs-color-accent-active);
+  --color-accent-container:                      var(--bs-color-accent-container);
+
+  /* Status — Success */
+  --color-success-default:                       var(--bs-color-success-default);
+  --color-success-hover:                         var(--bs-color-success-hover);
+  --color-success-focused:                       var(--bs-color-success-focused);
+  --color-success-pressed:                       var(--bs-color-success-pressed);
+  --color-success-container:                     var(--bs-color-success-container);
+
+  /* Status — Warning */
+  --color-warning-default:                       var(--bs-color-warning-default);
+  --color-warning-hover:                         var(--bs-color-warning-hover);
+  --color-warning-focused:                       var(--bs-color-warning-focused);
+  --color-warning-pressed:                       var(--bs-color-warning-pressed);
+  --color-warning-container:                     var(--bs-color-warning-container);
+
+  /* Status — Error */
+  --color-error-default:                         var(--bs-color-error-default);
+  --color-error-hover:                           var(--bs-color-error-hover);
+  --color-error-focused:                         var(--bs-color-error-focused);
+  --color-error-pressed:                         var(--bs-color-error-pressed);
+  --color-error-container:                       var(--bs-color-error-container);
+
+  /* Status — Info */
+  --color-info-default:                          var(--bs-color-info-default);
+  --color-info-hover:                            var(--bs-color-info-hover);
+  --color-info-focused:                          var(--bs-color-info-focused);
+  --color-info-pressed:                          var(--bs-color-info-pressed);
+  --color-info-container:                        var(--bs-color-info-container);
+
+  /* Text */
+  --color-text-static-white:                     var(--bs-color-text-static-white);
+  --color-text-static-black:                     var(--bs-color-text-static-black);
+  --color-text-default:                          var(--bs-color-text-default);
+  --color-text-secondary:                        var(--bs-color-text-secondary);
+  --color-text-muted:                            var(--bs-color-text-muted);
+  --color-text-inverse:                          var(--bs-color-text-inverse);
+  --color-text-link:                             var(--bs-color-text-link);
+  --color-text-success:                          var(--bs-color-text-success);
+  --color-text-info:                             var(--bs-color-text-info);
+  --color-text-warning:                          var(--bs-color-text-warning);
+  --color-text-error:                            var(--bs-color-text-error);
+  --color-text-on-action:                        var(--bs-color-text-on-action);
+  --color-text-on-disabled:                      var(--bs-color-text-on-disabled);
+  --color-text-accent:                           var(--bs-color-text-accent);
+  --color-text-inverse-accent:                   var(--bs-color-text-inverse-accent);
+  --color-text-neutral---default:                var(--bs-color-text-neutral---default);
+  --color-text-neutral---hover:                  var(--bs-color-text-neutral---hover);
+  --color-text-neutral---focused:                var(--bs-color-text-neutral---focused);
+  --color-text-neutral---pressed:                var(--bs-color-text-neutral---pressed);
+  --color-text-neutral-default:                  var(--bs-color-text-neutral-default);
+  --color-text-neutral-hover:                    var(--bs-color-text-neutral-hover);
+  --color-text-neutral-focused:                  var(--bs-color-text-neutral-focused);
+  --color-text-neutral-pressed:                  var(--bs-color-text-neutral-pressed);
+  --color-text-action:                           var(--bs-color-text-action);
+  --color-text-action-hover:                     var(--bs-color-text-action-hover);
+
+  /* Surface */
+  --color-surface-base:                          var(--bs-color-surface-base);
+  --color-surface-raised:                        var(--bs-color-surface-raised);
+  --color-surface-container:                     var(--bs-color-surface-container);
+  --color-surface-hover:                         var(--bs-color-surface-hover);
+  --color-surface-focus:                         var(--bs-color-surface-focus);
+  --color-surface-pressed:                       var(--bs-color-surface-pressed);
+  --color-surface-selected:                      var(--bs-color-surface-selected);
+  --color-surface-selected-hover:                var(--bs-color-surface-selected-hover);
+  --color-surface-selected-focus:                var(--bs-color-surface-selected-focus);
+  --color-surface-selected-pressed:              var(--bs-color-surface-selected-pressed);
+  --color-surface-active:                        var(--bs-color-surface-active);
+  --color-surface-inset:                         var(--bs-color-surface-inset);
+  --color-surface-inverse:                       var(--bs-color-surface-inverse);
+  --color-surface-accent:                        var(--bs-color-surface-accent);
+  --color-surface-on-action:                     var(--bs-color-surface-on-action);
+  --color-surface-on-action-disabled:            var(--bs-color-surface-on-action-disabled);
+  --color-surface-action-disabled:               var(--bs-color-surface-action-disabled);
+  --color-surface-success:                       var(--bs-color-surface-success);
+  --color-surface-info:                          var(--bs-color-surface-info);
+  --color-surface-warning:                       var(--bs-color-surface-warning);
+  --color-surface-error:                         var(--bs-color-surface-error);
+  --color-surface-overlay:                       var(--bs-color-surface-overlay);
+  --color-surface-overlay-level-2:               var(--bs-color-surface-overlay-level-2);
+  --color-surface-action:                        var(--bs-color-surface-action);
+
+  /* Icons */
+  --color-icons-static-white:                    var(--bs-color-icons-static-white);
+  --color-icons-static-black:                    var(--bs-color-icons-static-black);
+  --color-icons-default:                         var(--bs-color-icons-default);
+  --color-icons-muted:                           var(--bs-color-icons-muted);
+  --color-icons-disabled:                        var(--bs-color-icons-disabled);
+  --color-icons-inverse:                         var(--bs-color-icons-inverse);
+  --color-icons-success:                         var(--bs-color-icons-success);
+  --color-icons-info:                            var(--bs-color-icons-info);
+  --color-icons-warning:                         var(--bs-color-icons-warning);
+  --color-icons-error:                           var(--bs-color-icons-error);
+  --color-icons-neutral-default:                 var(--bs-color-icons-neutral-default);
+  --color-icons-neutral-hover:                   var(--bs-color-icons-neutral-hover);
+  --color-icons-neutral-focused:                 var(--bs-color-icons-neutral-focused);
+  --color-icons-neutral-pressed:                 var(--bs-color-icons-neutral-pressed);
+  --color-icons-action:                          var(--bs-color-icons-action);
+  --color-icons-action-hover:                    var(--bs-color-icons-action-hover);
+
+  /* Borders */
+  --color-border-default:                        var(--bs-color-border-default);
+  --color-border-neutral-hover:                  var(--bs-color-border-neutral-hover);
+  --color-border-neutral-active:                 var(--bs-color-border-neutral-active);
+  --color-border-neutral-disabled:               var(--bs-color-border-neutral-disabled);
+  --color-border-neutral-container:              var(--bs-color-border-neutral-container);
+  --color-border-neutral-container-hover:        var(--bs-color-border-neutral-container-hover);
+  --color-border-neutral-container-focused:      var(--bs-color-border-neutral-container-focused);
+  --color-border-neutral-container-pressed:      var(--bs-color-border-neutral-container-pressed);
+  --color-border-success:                        var(--bs-color-border-success);
+  --color-border-success-hover:                  var(--bs-color-border-success-hover);
+  --color-border-success-focus:                  var(--bs-color-border-success-focus);
+  --color-border-warning:                        var(--bs-color-border-warning);
+  --color-border-warning-hover:                  var(--bs-color-border-warning-hover);
+  --color-border-warning-focus:                  var(--bs-color-border-warning-focus);
+  --color-border-error:                          var(--bs-color-border-error);
+  --color-border-error-hover:                    var(--bs-color-border-error-hover);
+  --color-border-error-focus:                    var(--bs-color-border-error-focus);
+  --color-border-info:                           var(--bs-color-border-info);
+  --color-border-info-hover:                     var(--bs-color-border-info-hover);
+  --color-border-info-focus:                     var(--bs-color-border-info-focus);
+  --color-border-neutral-focus:                  var(--bs-color-border-neutral-focus);
+  --color-border-primary:                        var(--bs-color-border-primary);
+  --color-border-primary-hover:                  var(--bs-color-border-primary-hover);
+  --color-border-primary-focus:                  var(--bs-color-border-primary-focus);
+  --color-border-primary-pressed:                var(--bs-color-border-primary-pressed);
+
+  /* Elevation */
+  --color-elevation-none:                        var(--bs-color-elevation-none);
+  --color-elevation-low:                         var(--bs-color-elevation-low);
+  --color-elevation-medium:                      var(--bs-color-elevation-medium);
+  --color-elevation-high:                        var(--bs-color-elevation-high);
+  --color-elevation-higher:                      var(--bs-color-elevation-higher);
+  --color-elevation-highest:                     var(--bs-color-elevation-highest);
+  --color-elevation-inner:                       var(--bs-color-elevation-inner);
+  --color-elevation-focus:                       var(--bs-color-elevation-focus);
+
+  /* Border Width */
+  --border-width-0:                              var(--bs-border-width-0);
+  --border-width-thin:                           var(--bs-border-width-thin);
+  --border-width-medium:                         var(--bs-border-width-medium);
+  --border-width-thick:                          var(--bs-border-width-thick);
+
+  /* Border Radius */
+  --border-radius-0:                             var(--bs-border-radius-0);
+  --border-radius-50:                            var(--bs-border-radius-50);
+  --border-radius-75:                            var(--bs-border-radius-75);
+  --border-radius-100:                           var(--bs-border-radius-100);
+  --border-radius-150:                           var(--bs-border-radius-150);
+  --border-radius-200:                           var(--bs-border-radius-200);
+  --border-radius-300:                           var(--bs-border-radius-300);
+  --border-radius-full:                          var(--bs-border-radius-full);
+
+  /* Spacing */
+  --spacing-0:                                   var(--bs-spacing-0);
+  --spacing-25:                                  var(--bs-spacing-25);
+  --spacing-50:                                  var(--bs-spacing-50);
+  --spacing-75:                                  var(--bs-spacing-75);
+  --spacing-100:                                 var(--bs-spacing-100);
+  --spacing-150:                                 var(--bs-spacing-150);
+  --spacing-200:                                 var(--bs-spacing-200);
+  --spacing-250:                                 var(--bs-spacing-250);
+  --spacing-300:                                 var(--bs-spacing-300);
+  --spacing-350:                                 var(--bs-spacing-350);
+  --spacing-400:                                 var(--bs-spacing-400);
+  --spacing-500:                                 var(--bs-spacing-500);
+  --spacing-550:                                 var(--bs-spacing-550);
+  --spacing-600:                                 var(--bs-spacing-600);
+  --spacing-700:                                 var(--bs-spacing-700);
+  --spacing-800:                                 var(--bs-spacing-800);
+  --spacing-1000:                                var(--bs-spacing-1000);
+  --spacing-1200:                                var(--bs-spacing-1200);
+  --spacing-1500:                                var(--bs-spacing-1500);
+  --spacing--600:                                var(--bs-spacing--600);
+  --spacing--500:                                var(--bs-spacing--500);
+  --spacing--350:                                var(--bs-spacing--350);
+  --spacing--200:                                var(--bs-spacing--200);
+  --spacing--150:                                var(--bs-spacing--150);
+  --spacing--100:                                var(--bs-spacing--100);
+
+  /* Sizing */
+  --sizing-75:                                   var(--bs-sizing-75);
+  --sizing-100:                                  var(--bs-sizing-100);
+  --sizing-200:                                  var(--bs-sizing-200);
+  --sizing-250:                                  var(--bs-sizing-250);
+  --sizing-300:                                  var(--bs-sizing-300);
+  --sizing-400:                                  var(--bs-sizing-400);
+  --sizing-500:                                  var(--bs-sizing-500);
+  --sizing-600:                                  var(--bs-sizing-600);
+  --sizing-700:                                  var(--bs-sizing-700);
+  --sizing-800:                                  var(--bs-sizing-800);
+  --sizing-1000:                                 var(--bs-sizing-1000);
+  --sizing-1200:                                 var(--bs-sizing-1200);
+  --sizing-1600:                                 var(--bs-sizing-1600);
+  --sizing-3200:                                 var(--bs-sizing-3200);
+  --sizing-6400:                                 var(--bs-sizing-6400);
+
+  /* Primary */
+  --color-primary-default:                       var(--bs-color-primary-default);
+  --color-primary-hover:                         var(--bs-color-primary-hover);
+  --color-primary-focused:                       var(--bs-color-primary-focused);
+  --color-primary-pressed:                       var(--bs-color-primary-pressed);
+  --color-primary-container:                     var(--bs-color-primary-container);
+  --color-primary-container-hover:               var(--bs-color-primary-container-hover);
+}
+
+/* ─── Dark mode ──────────────────────────────────────────────────────── */
+/* brandsync-tokens v1 ships light values only.                          */
+/* These overrides use raw palette vars already defined by the package.  */
+[data-theme="dark"] {
+  --color-surface-base:              var(--neutral-900);
+  --color-surface-raised:            var(--neutral-800);
+  --color-surface-container:         var(--neutral-800);
+  --color-surface-hover:             var(--neutral-700);
+  --color-surface-pressed:           var(--neutral-600);
+  --color-surface-selected:          var(--neutral-800);
+  --color-surface-active:            var(--neutral-700);
+
+  --color-text-default:              var(--white);
+  --color-text-secondary:            var(--neutral-200);
+  --color-text-muted:                var(--neutral-300);
+  --color-text-inverse:              var(--white);
+  --color-text-on-action:            var(--white);
+
+  --color-icons-default:             var(--white);
+  --color-icons-neutral-default:     var(--neutral-200);
+  --color-icons-muted:               var(--neutral-400);
+
+  --color-border-default:            var(--neutral-700);
+  --color-border-neutral-focus:      var(--brand-400);
+  --color-border-primary:            var(--brand-400);
+
+  --color-primary-default:           var(--brand-400);
+  --color-primary-hover:             var(--brand-300);
+  --color-primary-pressed:           var(--brand-200);
+  --color-primary-container:         var(--brand-800);
+}

@@ -1,0 +1,162 @@
+# Radio Button
+
+**Type:** UI Component
+**Source:** BrandSync Design System (Strapi)
+
+## Description
+
+Radio buttons allow users to select one option from a set.
+
+## Variants
+
+- States
+- Group
+
+## Frameworks
+
+- HTML
+
+## Design Tokens
+
+- `--bs-spacing-100`
+- `--bs-font-size-sm`
+- `--bs-text-default`
+- `--bs-spacing-600`
+- `--bs-spacing-50`
+- `--bs-spacing-250`
+- `--bs-border-radius-full`
+- `--bs-border-default`
+- `--bs-text-inverse`
+- `--bs-color-neutral-default`
+- `--bs-border-neutral-focus`
+- `--bs-color-primary-default`
+- `--bs-color-primary-hover`
+- `--bs-text-on-disabled`
+- `--bs-surface-action-disabled`
+- `--bs-spacing-150`
+- `--bs-spacing-75`
+
+## CSS Classes
+
+- `bs-radio`
+- `bs-radio__circle`
+- `bs-radio--disabled`
+
+## Code Examples
+
+#### States (HTML)
+
+```html
+<!-- brandsync: Radio Button / States | requires: brandsync-tokens -->
+<style>
+.bs-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  cursor: pointer;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+  user-select: none;
+  min-height: var(--bs-spacing-600);
+  padding: 0 var(--bs-spacing-50);
+  position: relative;
+}
+.bs-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-radio__circle {
+  position: relative;
+  width: var(--bs-spacing-250);
+  height: var(--bs-spacing-250);
+  border-radius: var(--bs-border-radius-full);
+  border: 2px solid var(--bs-border-default);
+  background: transparent;
+  flex-shrink: 0;
+  transition: border-color 0.bs-15s, background 0.bs-15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-radio__circle::after {
+  content: '';
+  width: var(--bs-spacing-100);
+  height: var(--bs-spacing-100);
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-text-inverse);
+  transform: scale(0);
+  transition: transform 0.bs-15s;
+}
+.bs-radio:hover .bs-radio__circle { border-color: var(--bs-color-neutral-default); }
+.bs-radio input:focus-visible ~ .bs-radio__circle { outline: 2px solid var(--bs-border-neutral-focus); outline-offset: 2px; }
+.bs-radio input:checked ~ .bs-radio__circle { border-color: var(--bs-color-primary-default); background: var(--bs-color-primary-default); }
+.bs-radio:hover input:checked ~ .bs-radio__circle { border-color: var(--bs-color-primary-hover); background: var(--bs-color-primary-hover); }
+.bs-radio input:checked ~ .bs-radio__circle::after { transform: scale(1); }
+.bs-radio--disabled { cursor: not-allowed; pointer-events: none; color: var(--bs-text-on-disabled); }
+.bs-radio--disabled .bs-radio__circle { border-color: var(--bs-border-default); background: var(--bs-surface-action-disabled); }
+.bs-radio--disabled input:checked ~ .bs-radio__circle { border-color: var(--bs-border-default); background: var(--bs-surface-action-disabled); }
+.bs-radio--disabled input:checked ~ .bs-radio__circle::after { background: var(--bs-text-on-disabled); }
+</style>
+<div style="display:flex;flex-direction:column;gap:var(--bs-spacing-150);">
+  <label class="bs-radio"><input type="radio" name="r1"><span class="bs-radio__circle"></span>Unselected</label>
+  <label class="bs-radio"><input type="radio" name="r1" checked><span class="bs-radio__circle"></span>Selected</label>
+  <label class="bs-radio bs-radio--disabled"><input type="radio" name="r2" disabled><span class="bs-radio__circle"></span>Disabled unselected</label>
+  <label class="bs-radio bs-radio--disabled"><input type="radio" name="r3" checked disabled><span class="bs-radio__circle"></span>Disabled selected</label>
+</div>
+```
+
+#### Group (HTML)
+
+```html
+<!-- brandsync: Radio Button / Group | requires: brandsync-tokens -->
+<style>
+.bs-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  cursor: pointer;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+  user-select: none;
+  min-height: var(--bs-spacing-600);
+  padding: 0 var(--bs-spacing-50);
+  position: relative;
+}
+.bs-radio input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-radio__circle {
+  position: relative;
+  width: var(--bs-spacing-250);
+  height: var(--bs-spacing-250);
+  border-radius: var(--bs-border-radius-full);
+  border: 2px solid var(--bs-border-default);
+  background: transparent;
+  flex-shrink: 0;
+  transition: border-color 0.bs-15s, background 0.bs-15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-radio__circle::after {
+  content: '';
+  width: var(--bs-spacing-100);
+  height: var(--bs-spacing-100);
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-text-inverse);
+  transform: scale(0);
+  transition: transform 0.bs-15s;
+}
+.bs-radio:hover .bs-radio__circle { border-color: var(--bs-color-neutral-default); }
+.bs-radio input:focus-visible ~ .bs-radio__circle { outline: 2px solid var(--bs-border-neutral-focus); outline-offset: 2px; }
+.bs-radio input:checked ~ .bs-radio__circle { border-color: var(--bs-color-primary-default); background: var(--bs-color-primary-default); }
+.bs-radio:hover input:checked ~ .bs-radio__circle { border-color: var(--bs-color-primary-hover); background: var(--bs-color-primary-hover); }
+.bs-radio input:checked ~ .bs-radio__circle::after { transform: scale(1); }
+.bs-radio--disabled { cursor: not-allowed; pointer-events: none; color: var(--bs-text-on-disabled); }
+.bs-radio--disabled .bs-radio__circle { border-color: var(--bs-border-default); background: var(--bs-surface-action-disabled); }
+.bs-radio--disabled input:checked ~ .bs-radio__circle { border-color: var(--bs-border-default); background: var(--bs-surface-action-disabled); }
+.bs-radio--disabled input:checked ~ .bs-radio__circle::after { background: var(--bs-text-on-disabled); }
+</style>
+<fieldset style="border:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--bs-spacing-75);">
+  <legend style="font-size:var(--bs-font-size-sm);font-weight:600;color:var(--bs-text-default);margin-bottom:var(--bs-spacing-100);">Preferred contact</legend>
+  <label class="bs-radio"><input type="radio" name="contact" value="email" checked><span class="bs-radio__circle"></span>Email</label>
+  <label class="bs-radio"><input type="radio" name="contact" value="phone"><span class="bs-radio__circle"></span>Phone</label>
+  <label class="bs-radio"><input type="radio" name="contact" value="sms"><span class="bs-radio__circle"></span>SMS</label>
+  <label class="bs-radio bs-radio--disabled"><input type="radio" name="contact" value="post" disabled><span class="bs-radio__circle"></span>Post (unavailable)</label>
+</fieldset>
+```

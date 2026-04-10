@@ -1,0 +1,350 @@
+# Checkbox
+
+**Type:** UI Component
+**Source:** BrandSync Design System (Strapi)
+
+## Description
+
+Checkboxes allow users to select one or more items from a set, or to turn an option on or off.
+
+## Variants
+
+- Large
+- Medium
+- Small
+
+## Frameworks
+
+- HTML
+
+## Design Tokens
+
+- `--bs-spacing-100`
+- `--bs-font-size-sm`
+- `--bs-text-default`
+- `--bs-spacing-600`
+- `--bs-border-radius-50`
+- `--bs-border-default`
+- `--bs-font-size-2xl`
+- `--bs-font-size-xl`
+- `--bs-font-size-xs`
+- `--bs-font-size-md`
+- `--bs-font-size-2xs`
+- `--bs-color-neutral-default`
+- `--bs-border-neutral-focus`
+- `--bs-text-inverse`
+- `--bs-color-primary-default`
+- `--bs-color-primary-hover`
+- `--bs-text-on-disabled`
+- `--bs-surface-action-disabled`
+- `--bs-spacing-50`
+
+## CSS Classes
+
+- `bs-checkbox`
+- `bs-checkbox--lg`
+- `bs-checkbox__box`
+- `bs-icon-check`
+- `bs-icon-indeterminate`
+- `bs-checkbox--disabled`
+- `bs-checkbox--md`
+- `bs-checkbox--sm`
+
+## Code Examples
+
+#### Large (HTML)
+
+```html
+<!-- brandsync: Checkbox / Large | requires: brandsync-tokens -->
+<style>
+.bs-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+  user-select: none;
+  min-height: var(--bs-spacing-600);
+  padding: 0 4px;
+}
+.bs-checkbox input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-checkbox__box {
+  position: relative;
+  border-radius: var(--bs-border-radius-50);
+  border: 2px solid var(--bs-border-default);
+  background: transparent;
+  flex-shrink: 0;
+  transition: all 0.bs-15s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.bs-checkbox__box svg {
+  opacity: 0;
+  transition: all 0.bs-15s ease;
+  display: block;
+}
+/* Sizes */
+.bs-checkbox--lg .bs-checkbox__box { width: var(--bs-font-size-2xl); height: var(--bs-font-size-2xl); }
+.bs-checkbox--lg .bs-checkbox__box svg { width: var(--bs-font-size-sm); height: var(--bs-font-size-sm); }
+.bs-checkbox--md .bs-checkbox__box { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); }
+.bs-checkbox--md .bs-checkbox__box svg { width: var(--bs-font-size-xs); height: var(--bs-font-size-xs); }
+.bs-checkbox--sm .bs-checkbox__box { width: var(--bs-font-size-md); height: var(--bs-font-size-md); }
+.bs-checkbox--sm .bs-checkbox__box svg { width: var(--bs-font-size-2xs); height: var(--bs-font-size-2xs); }
+/* Hover */
+.bs-checkbox:hover .bs-checkbox__box { border-color: var(--bs-color-neutral-default); }
+/* Focus */
+.bs-checkbox input:focus-visible ~ .bs-checkbox__box {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+/* Checked */
+.bs-checkbox input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:checked ~ .bs-checkbox__box svg { opacity: 1; }
+.bs-checkbox:hover input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-hover);
+}
+/* Indeterminate */
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-check { opacity: 0; }
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-indeterminate { opacity: 1; }
+/* Disabled */
+.bs-checkbox--disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--bs-text-on-disabled);
+}
+.bs-checkbox--disabled .bs-checkbox__box {
+  border-color: var(--bs-border-default);
+  background: var(--bs-surface-action-disabled);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box {
+  background: var(--bs-surface-action-disabled);
+  border-color: var(--bs-border-default);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box svg { color: var(--bs-text-on-disabled); }
+</style>
+<div style="display:flex;flex-direction:column;gap: var(--bs-spacing-50);">
+<label class="bs-checkbox bs-checkbox--lg"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Unselected</label>
+<label class="bs-checkbox bs-checkbox--lg"><input type="checkbox" checked><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Selected</label>
+<label class="bs-checkbox bs-checkbox--lg"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Indeterminate</label>
+<label class="bs-checkbox bs-checkbox--lg bs-checkbox--disabled"><input type="checkbox" disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled unselected</label>
+<label class="bs-checkbox bs-checkbox--lg bs-checkbox--disabled"><input type="checkbox" checked disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled selected</label>
+</div>
+<script>
+document.querySelectorAll('.bs-checkbox:not(.bs-checkbox--disabled)').forEach(function(label) {
+  label.addEventListener('click', function(e) {
+    e.preventDefault();
+    var input = this.querySelector('input');
+    if (!input) return;
+    if (input.indeterminate) { input.indeterminate = false; input.checked = true; }
+    else { input.checked = !input.checked; }
+  });
+});
+</script>
+```
+
+#### Medium (HTML)
+
+```html
+<!-- brandsync: Checkbox / Medium | requires: brandsync-tokens -->
+<style>
+.bs-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+  user-select: none;
+  min-height: var(--bs-spacing-600);
+  padding: 0 4px;
+}
+.bs-checkbox input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-checkbox__box {
+  position: relative;
+  border-radius: var(--bs-border-radius-50);
+  border: 2px solid var(--bs-border-default);
+  background: transparent;
+  flex-shrink: 0;
+  transition: all 0.bs-15s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.bs-checkbox__box svg {
+  opacity: 0;
+  transition: all 0.bs-15s ease;
+  display: block;
+}
+/* Sizes */
+.bs-checkbox--lg .bs-checkbox__box { width: var(--bs-font-size-2xl); height: var(--bs-font-size-2xl); }
+.bs-checkbox--lg .bs-checkbox__box svg { width: var(--bs-font-size-sm); height: var(--bs-font-size-sm); }
+.bs-checkbox--md .bs-checkbox__box { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); }
+.bs-checkbox--md .bs-checkbox__box svg { width: var(--bs-font-size-xs); height: var(--bs-font-size-xs); }
+.bs-checkbox--sm .bs-checkbox__box { width: var(--bs-font-size-md); height: var(--bs-font-size-md); }
+.bs-checkbox--sm .bs-checkbox__box svg { width: var(--bs-font-size-2xs); height: var(--bs-font-size-2xs); }
+/* Hover */
+.bs-checkbox:hover .bs-checkbox__box { border-color: var(--bs-color-neutral-default); }
+/* Focus */
+.bs-checkbox input:focus-visible ~ .bs-checkbox__box {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+/* Checked */
+.bs-checkbox input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:checked ~ .bs-checkbox__box svg { opacity: 1; }
+.bs-checkbox:hover input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-hover);
+}
+/* Indeterminate */
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-check { opacity: 0; }
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-indeterminate { opacity: 1; }
+/* Disabled */
+.bs-checkbox--disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--bs-text-on-disabled);
+}
+.bs-checkbox--disabled .bs-checkbox__box {
+  border-color: var(--bs-border-default);
+  background: var(--bs-surface-action-disabled);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box {
+  background: var(--bs-surface-action-disabled);
+  border-color: var(--bs-border-default);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box svg { color: var(--bs-text-on-disabled); }
+</style>
+<div style="display:flex;flex-direction:column;gap: var(--bs-spacing-50);">
+<label class="bs-checkbox bs-checkbox--md"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Unselected</label>
+<label class="bs-checkbox bs-checkbox--md"><input type="checkbox" checked><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Selected</label>
+<label class="bs-checkbox bs-checkbox--md"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Indeterminate</label>
+<label class="bs-checkbox bs-checkbox--md bs-checkbox--disabled"><input type="checkbox" disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled unselected</label>
+<label class="bs-checkbox bs-checkbox--md bs-checkbox--disabled"><input type="checkbox" checked disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled selected</label>
+</div>
+<script>
+document.querySelectorAll('.bs-checkbox:not(.bs-checkbox--disabled)').forEach(function(label) {
+  label.addEventListener('click', function(e) {
+    e.preventDefault();
+    var input = this.querySelector('input');
+    if (!input) return;
+    if (input.indeterminate) { input.indeterminate = false; input.checked = true; }
+    else { input.checked = !input.checked; }
+  });
+});
+</script>
+```
+
+#### Small (HTML)
+
+```html
+<!-- brandsync: Checkbox / Small | requires: brandsync-tokens -->
+<style>
+.bs-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+  user-select: none;
+  min-height: var(--bs-spacing-600);
+  padding: 0 4px;
+}
+.bs-checkbox input { position: absolute; opacity: 0; width: 0; height: 0; }
+.bs-checkbox__box {
+  position: relative;
+  border-radius: var(--bs-border-radius-50);
+  border: 2px solid var(--bs-border-default);
+  background: transparent;
+  flex-shrink: 0;
+  transition: all 0.bs-15s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.bs-checkbox__box svg {
+  opacity: 0;
+  transition: all 0.bs-15s ease;
+  display: block;
+}
+/* Sizes */
+.bs-checkbox--lg .bs-checkbox__box { width: var(--bs-font-size-2xl); height: var(--bs-font-size-2xl); }
+.bs-checkbox--lg .bs-checkbox__box svg { width: var(--bs-font-size-sm); height: var(--bs-font-size-sm); }
+.bs-checkbox--md .bs-checkbox__box { width: var(--bs-font-size-xl); height: var(--bs-font-size-xl); }
+.bs-checkbox--md .bs-checkbox__box svg { width: var(--bs-font-size-xs); height: var(--bs-font-size-xs); }
+.bs-checkbox--sm .bs-checkbox__box { width: var(--bs-font-size-md); height: var(--bs-font-size-md); }
+.bs-checkbox--sm .bs-checkbox__box svg { width: var(--bs-font-size-2xs); height: var(--bs-font-size-2xs); }
+/* Hover */
+.bs-checkbox:hover .bs-checkbox__box { border-color: var(--bs-color-neutral-default); }
+/* Focus */
+.bs-checkbox input:focus-visible ~ .bs-checkbox__box {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+/* Checked */
+.bs-checkbox input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:checked ~ .bs-checkbox__box svg { opacity: 1; }
+.bs-checkbox:hover input:checked ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-hover);
+}
+/* Indeterminate */
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box {
+  background: var(--bs-text-inverse);
+  border-color: var(--bs-color-primary-default);
+}
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-check { opacity: 0; }
+.bs-checkbox input:indeterminate ~ .bs-checkbox__box .bs-icon-indeterminate { opacity: 1; }
+/* Disabled */
+.bs-checkbox--disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: var(--bs-text-on-disabled);
+}
+.bs-checkbox--disabled .bs-checkbox__box {
+  border-color: var(--bs-border-default);
+  background: var(--bs-surface-action-disabled);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box {
+  background: var(--bs-surface-action-disabled);
+  border-color: var(--bs-border-default);
+}
+.bs-checkbox--disabled input:checked ~ .bs-checkbox__box svg { color: var(--bs-text-on-disabled); }
+</style>
+<div style="display:flex;flex-direction:column;gap: var(--bs-spacing-50);">
+<label class="bs-checkbox bs-checkbox--sm"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Unselected</label>
+<label class="bs-checkbox bs-checkbox--sm"><input type="checkbox" checked><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Selected</label>
+<label class="bs-checkbox bs-checkbox--sm"><input type="checkbox" ><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Indeterminate</label>
+<label class="bs-checkbox bs-checkbox--sm bs-checkbox--disabled"><input type="checkbox" disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled unselected</label>
+<label class="bs-checkbox bs-checkbox--sm bs-checkbox--disabled"><input type="checkbox" checked disabled><span class="bs-checkbox__box"><svg class="bs-icon-check" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="bs-icon-indeterminate" viewBox="0 0 14 14" fill="none" style="opacity:0;position:absolute;"><path d="M3 7h8" stroke="var(--bs-color-primary-default)" stroke-width="2" stroke-linecap="round"/></svg></span>Disabled selected</label>
+</div>
+<script>
+document.querySelectorAll('.bs-checkbox:not(.bs-checkbox--disabled)').forEach(function(label) {
+  label.addEventListener('click', function(e) {
+    e.preventDefault();
+    var input = this.querySelector('input');
+    if (!input) return;
+    if (input.indeterminate) { input.indeterminate = false; input.checked = true; }
+    else { input.checked = !input.checked; }
+  });
+});
+</script>
+```

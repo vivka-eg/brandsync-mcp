@@ -1,0 +1,218 @@
+<!--
+  BrandSync Component: Links
+  Links are navigational elements that take users to another page or location. They can appear inline within text or as standalone elements.
+
+  Variants: Default, With Icon, Inline, Default, Large
+  Design tokens used: --bs-text-action, --bs-font-size-md, --bs-font-size-2xl, --bs-text-action-hover, --bs-border-neutral-focus, --bs-spacing-25, --bs-spacing-400, --bs-spacing-50, --bs-text-default, --bs-spacing-200, --bs-text-muted, --bs-text-on-disabled, --bs-font-size-xs, --bs-text-secondary, --bs-font-size-lg, --bs-spacing-350, --bs-font-size-sm, --bs-font-size-xl, --bs-font-size-2xs
+  CSS classes: bs-link, bs-text, bs-demo, bs-label, bs-link--hover, bs-link--visited, bs-link--disabled, bs-link--lg, bs-link--md, bs-link--sm, bs-link--xs
+  Total examples: 5
+-->
+
+<!-- Group: Variants -->
+
+<!--
+  Variant: Default
+  Framework: HTML
+  Tokens: --bs-text-action, --bs-font-size-md, --bs-font-size-2xl, --bs-text-action-hover, --bs-border-neutral-focus, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-link
+-->
+<!-- brandsync: Links / Variants / Default | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-link {
+    color: var(--bs-text-action);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    font-size: var(--bs-font-size-md);
+    line-height: var(--bs-font-size-2xl);
+    transition: color 0.bs-15s ease;
+  }
+  .bs-link:hover {
+    color: var(--bs-text-action-hover);
+  }
+  .bs-link:focus {
+    outline: 2px solid var(--bs-border-neutral-focus);
+    outline-offset: 2px;
+    border-radius: var(--bs-spacing-25);
+  }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <a class="bs-link" href="#">Default link</a>
+</body>
+</html>
+
+<!--
+  Variant: With Icon
+  Framework: HTML
+  Tokens: --bs-spacing-50, --bs-text-action, --bs-font-size-md, --bs-font-size-2xl, --bs-text-action-hover, --bs-border-neutral-focus, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-link
+-->
+<!-- brandsync: Links / Variants / With Icon | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bs-spacing-50);
+    color: var(--bs-text-action);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    font-size: var(--bs-font-size-md);
+    line-height: var(--bs-font-size-2xl);
+    transition: color 0.bs-15s ease;
+  }
+  .bs-link:hover {
+    color: var(--bs-text-action-hover);
+  }
+  .bs-link:focus {
+    outline: 2px solid var(--bs-border-neutral-focus);
+    outline-offset: 2px;
+    border-radius: var(--bs-spacing-25);
+  }
+  .bs-link svg { flex-shrink: 0; }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <a class="bs-link" href="#">
+    Link with icon
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+  </a>
+</body>
+</html>
+
+<!--
+  Variant: Inline
+  Framework: HTML
+  Tokens: --bs-font-size-md, --bs-font-size-2xl, --bs-text-default, --bs-text-action, --bs-text-action-hover, --bs-border-neutral-focus, --bs-spacing-25, --bs-spacing-400
+  Classes: bs-text, bs-link
+-->
+<!-- brandsync: Links / Variants / Inline | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-text {
+    font-size: var(--bs-font-size-md);
+    line-height: var(--bs-font-size-2xl);
+    color: var(--bs-text-default);
+  }
+  .bs-link {
+    color: var(--bs-text-action);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.bs-15s ease;
+  }
+  .bs-link:hover {
+    color: var(--bs-text-action-hover);
+  }
+  .bs-link:focus {
+    outline: 2px solid var(--bs-border-neutral-focus);
+    outline-offset: 2px;
+    border-radius: var(--bs-spacing-25);
+  }
+</style>
+</head>
+<body style="padding: var(--bs-spacing-400);">
+  <p class="bs-text">
+    Read our <a class="bs-link" href="#">terms and conditions</a> before continuing.
+  </p>
+</body>
+</html>
+
+<!-- Group: States -->
+
+<!--
+  Variant: Default
+  Framework: HTML
+  Tokens: --bs-spacing-200, --bs-spacing-400, --bs-text-action, --bs-font-size-md, --bs-font-size-2xl, --bs-text-action-hover, --bs-text-muted, --bs-text-on-disabled, --bs-font-size-xs, --bs-text-secondary, --bs-spacing-50
+  Classes: bs-demo, bs-label, bs-link, bs-link--hover, bs-link--visited, bs-link--disabled
+-->
+<!-- brandsync: Links / States / Default | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-demo { display: flex; flex-direction: column; gap: var(--bs-spacing-200); padding: var(--bs-spacing-400); }
+  .bs-link {
+    color: var(--bs-text-action);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    font-size: var(--bs-font-size-md);
+    line-height: var(--bs-font-size-2xl);
+    width: fit-content;
+  }
+  .bs-link--hover { color: var(--bs-text-action-hover); }
+  .bs-link--visited { color: var(--bs-text-muted); }
+  .bs-link--disabled {
+    color: var(--bs-text-on-disabled);
+    text-decoration: none;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .bs-label { font-size: var(--bs-font-size-xs); color: var(--bs-text-secondary); margin-bottom: var(--bs-spacing-50); }
+</style>
+</head>
+<body>
+  <div class="bs-demo">
+    <div><div class="bs-label">Default</div><a class="bs-link" href="#">Default link</a></div>
+    <div><div class="bs-label">Hover</div><a class="bs-link bs-link--hover" href="#">Hovered link</a></div>
+    <div><div class="bs-label">Visited</div><a class="bs-link bs-link--visited" href="#">Visited link</a></div>
+    <div><div class="bs-label">Disabled</div><span class="bs-link bs-link--disabled">Disabled link</span></div>
+  </div>
+</body>
+</html>
+
+<!-- Group: Sizes -->
+
+<!--
+  Variant: Large
+  Framework: HTML
+  Tokens: --bs-spacing-200, --bs-spacing-400, --bs-text-action, --bs-font-size-lg, --bs-spacing-350, --bs-font-size-md, --bs-font-size-2xl, --bs-font-size-sm, --bs-font-size-xl, --bs-font-size-xs, --bs-font-size-2xs, --bs-text-secondary, --bs-spacing-25
+  Classes: bs-demo, bs-label, bs-link, bs-link--lg, bs-link--md, bs-link--sm, bs-link--xs
+-->
+<!-- brandsync: Links / Sizes / Large | requires: brandsync-tokens -->
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+  .bs-demo { display: flex; flex-direction: column; gap: var(--bs-spacing-200); padding: var(--bs-spacing-400); }
+  .bs-link {
+    color: var(--bs-text-action);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .bs-link--lg { font-size: var(--bs-font-size-lg); line-height: var(--bs-spacing-350); }
+  .bs-link--md { font-size: var(--bs-font-size-md); line-height: var(--bs-font-size-2xl); }
+  .bs-link--sm { font-size: var(--bs-font-size-sm); line-height: var(--bs-font-size-xl); }
+  .bs-link--xs { font-size: var(--bs-font-size-xs); line-height: var(--bs-font-size-md); }
+  .bs-label { font-size: var(--bs-font-size-2xs); color: var(--bs-text-secondary); margin-bottom: var(--bs-spacing-25); }
+</style>
+</head>
+<body>
+  <div class="bs-demo">
+    <div><div class="bs-label">Large</div><a class="bs-link bs-link--lg" href="#">Large link</a></div>
+    <div><div class="bs-label">Medium</div><a class="bs-link bs-link--md" href="#">Medium link</a></div>
+    <div><div class="bs-label">Small</div><a class="bs-link bs-link--sm" href="#">Small link</a></div>
+    <div><div class="bs-label">XSmall</div><a class="bs-link bs-link--xs" href="#">XSmall link</a></div>
+  </div>
+</body>
+</html>
