@@ -2,9 +2,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
-import { tmpdir } from "os";
+import { homedir } from "os";
 
-const HANDOFF_DIR = join(tmpdir(), "brandsync-handoff");
+const HANDOFF_DIR = join(homedir(), ".brandsync", "handoff");
 const GAP_THRESHOLD = 3;
 
 type HandoffStatus =
@@ -29,6 +29,7 @@ type HandoffFile = {
   created_at: string;
   updated_at: string;
   framework?: string;
+  retrieved_node_ids?: string[];
   pocket1?: Record<string, unknown>;
   pocket3?: {
     attempt_count: number;
@@ -76,9 +77,10 @@ export function register(server: McpServer) {
           .describe("Pocket being completed: 1 (FigJam flow) or 3 (code attempt). Pocket 2 is skipped."),
         data: z.record(z.unknown()).describe(
           "Pocket 1: { figjam_file_key, screens, component_names, open_questions }. " +
-          "Pocket 3: { framework?, files?, feedback?, feedback_note?, gap_summary? }. " +
+          "Pocket 3: { framework?, files?, feedback?, feedback_note?, gap_summary?, retrieved_node_ids? }. " +
           "feedback = 'accepted' | 'rejected'. " +
-          "files = [{ name, content }] for generated code files."
+          "files = [{ name, content }] for generated code files. " +
+          "retrieved_node_ids = string[] of graph node IDs returned by query_graph — required for the learning loop."
         ),
       },
     },
@@ -120,6 +122,7 @@ export function register(server: McpServer) {
       }
 
       if (data.framework) hf.framework = data.framework as string;
+      if (data.retrieved_node_ids) hf.retrieved_node_ids = data.retrieved_node_ids as string[];
 
       const feedback = data.feedback as "accepted" | "rejected" | undefined;
       const attemptNum = hf.pocket3.attempt_count + 1;
@@ -216,6 +219,7 @@ export function register(server: McpServer) {
         ticket: hf.ticket,
         status: hf.status,
         framework: hf.framework,
+        retrieved_node_ids: hf.retrieved_node_ids ?? [],
         attempt_count: hf.pocket3?.attempt_count ?? 0,
         corpus_entry_written: hf.corpus_entry_written,
         gap_summary: hf.gap_summary,

@@ -3,4 +3,15 @@ dist/
 *.js.map
 .env
 .mcp.json
-migration-notes/
+
+# Mac junk
+.DS_Store
+**/.DS_Store
+
+# graphify — belongs in brandsync-brain, not here
+graphify-out/
+corpus/
+Patterns/
+
+# Zip archives
+*.zip

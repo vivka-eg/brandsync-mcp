@@ -118,6 +118,9 @@ One status line per step. Show generated files at the end. Ask for approval — 
 ✅ Login.tsx
 ✅ Dashboard.tsx
 ✅ Settings.tsx
+[approval question — wait for response]
+⏳ Scanning for corpus learnings...
+📚 Corpus updated — 2 new learnings written
 ```
 
 ### Execution Order
@@ -130,9 +133,20 @@ If the ticket has prior attempts, call `get_attempt_history(ticket)` and read al
 Scan `package.json` in the current working directory.
 Install `brandsync-tokens` if missing. Add CSS import to the entry point.
 
-**Step 2 — Generate code** *(skill: pocket-3/2-screen-to-code)*
-For each screen: match corpus pattern → resolve components → resolve tokens → generate file.
-All styling via `var(--token-name)`. No hardcoded values. No invented components.
+**Step 2 — Read project + generate code** *(skill: pocket-3/2-screen-to-code)*
+
+Before writing any code:
+- Read the target project's `package.json`, `src/` structure, and 1–2 existing screen files
+- Understand its conventions: where screens live, naming style, styling approach, routing
+
+Then for each screen:
+1. `search_guidelines(screen name)` → find matching corpus pattern
+2. Read the pattern spec — components, tokens, layout, states
+3. `get_component(name)` for each component the pattern requires
+4. Write the file into the project following its actual conventions
+5. Implement all states (loading, empty, error) — not just the happy path
+
+All token values via `var(--bs-*)` only. No hardcoded values. No invented components.
 
 **Step 3 — Approval check** *(skill: pocket-3/3-approval-check)*
 Show generated files. Ask once: "Does this look good? Reply yes to accept, or no with notes."
@@ -141,12 +155,22 @@ Show generated files. Ask once: "Does this look good? Reply yes to accept, or no
 1. `save_handoff(ticket, 3, { framework, files, feedback: "accepted" })`
 2. `write_corpus_entry(ticket, "decision", { summary, screens, framework, components, tokens })`
 3. Print: `✅ Done — code accepted and recorded in corpus/decisions/`
+4. Proceed to **Step 4 — Corpus Learning**
 
 **On NO:**
 1. `save_handoff(ticket, 3, { framework, files, feedback: "rejected", feedback_note: "<note>" })`
 2. Read the status in the response:
    - `rejected` (attempt < 3): ask if they want another attempt
    - `gap_detected` (attempt ≥ 3): → Gap Detection
+3. Proceed to **Step 4 — Corpus Learning**
+
+**Step 4 — Corpus Learning** *(skill: pocket-3/4-corpus-learning)*
+Scan what was built. Write generalizable knowledge back to the corpus — new patterns, confirmed component gaps, undocumented component variants, token naming drift. Runs automatically after every pipeline run regardless of approval outcome.
+
+```
+⏳ Scanning for corpus learnings...
+📚 Corpus updated — N new learnings written
+```
 
 ### Gap Detection (3+ rejections)
 

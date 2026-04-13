@@ -28,6 +28,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
+const BRAIN_ROOT = process.env.BRAIN_ROOT ?? ROOT;
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -41,9 +42,9 @@ const STRAPI_BASE = strapiArg
 
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN ?? "";
 
-const COMPONENTS_DIR = join(ROOT, "corpus", "components");
-const PATTERNS_DIR   = join(ROOT, "corpus", "patterns");
-const PATTERNS_SRC   = join(ROOT, "Patterns");
+const COMPONENTS_DIR = join(BRAIN_ROOT, "corpus", "components");
+const PATTERNS_DIR   = join(BRAIN_ROOT, "corpus", "patterns");
+const PATTERNS_SRC   = join(BRAIN_ROOT, "Patterns");
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 

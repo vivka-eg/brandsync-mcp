@@ -20,12 +20,14 @@ Run:
 import re
 import json
 import sys
+import os
 from pathlib import Path
 
-HTML_PATH = Path("graphify-out/graph.html")
+BRAIN_ROOT = Path(os.environ.get("BRAIN_ROOT", "."))
+HTML_PATH = BRAIN_ROOT / "graphify-out" / "graph.html"
 
 if not HTML_PATH.exists():
-    print("ERROR: graphify-out/graph.html not found. Run /graphify corpus/ first.")
+    print(f"ERROR: {HTML_PATH} not found. Run /graphify corpus/ first.")
     sys.exit(1)
 
 html = HTML_PATH.read_text(encoding="utf-8")
@@ -47,7 +49,7 @@ def node_layer(n: dict) -> str:
         return "token"
 
     # Full-page UI patterns from corpus/patterns/
-    if src.startswith("corpus/patterns/") and nid.endswith("_pattern"):
+    if ("corpus/patterns/" in src) and nid.endswith("_pattern"):
         return "pattern"
 
     # Design-system concepts and accessibility patterns

@@ -5,7 +5,8 @@ import { join } from "path";
 import { tmpdir } from "os";
 
 const HANDOFF_DIR = join(tmpdir(), "brandsync-handoff");
-const CORPUS_ROOT = join(process.cwd(), "corpus");
+const BRAIN_ROOT  = process.env.BRAIN_ROOT ?? process.cwd();
+const CORPUS_ROOT = join(BRAIN_ROOT, "corpus");
 const DECISIONS_DIR = join(CORPUS_ROOT, "decisions");
 const GAPS_DIR = join(CORPUS_ROOT, "gaps");
 
