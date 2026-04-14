@@ -1,7 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { strapiBase, strapiToken, type StrapiComponent } from "../strapi.js";
-import { formatComponent, textOnly } from "../formatter.js";
+import { findCorpusEntry } from "../db/index.js";
+
+/** Normalize a user-supplied component name to a slug fragment, e.g. "Input Fields" → "input-fields" */
+function toSlug(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-");
+}
 
 export function register(server: McpServer) {
   server.registerTool(
@@ -16,80 +20,33 @@ export function register(server: McpServer) {
       },
     },
     async ({ component }) => {
-      // Step 1: find by name
-      let listData: unknown;
-      try {
-        const params = new URLSearchParams({
-          "filters[Title][$eqi]": component,
-          "pagination[pageSize]": "1",
-        });
-        const url = `${strapiBase}/api/components?${params.toString()}`;
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${strapiToken}` },
-        });
-        if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
-        listData = await res.json();
-      } catch (err) {
-        return {
-          isError: true,
-          content: [{ type: "text", text: `Strapi request failed: ${err}` }],
-        };
-      }
+      const slug = toSlug(component);
 
-      const items = (
-        listData as { data?: { documentId: string; Title: string }[] }
-      ).data ?? [];
+      const entry = await findCorpusEntry(slug, "component");
 
-      if (items.length === 0) {
+      if (!entry) {
         return {
           content: [
             {
-              type: "text",
-              text: `Component "${component}" not found. Use list_components to see available components.`,
+              type: "text" as const,
+              text: `Component "${component}" not found in corpus. Use list_components to see available components.`,
             },
           ],
         };
       }
 
-      const { documentId } = items[0];
+      // Also fetch the HTML examples for this component (if any)
+      const htmlEntry = await findCorpusEntry(slug, "component_html");
 
-      // Step 2: fetch full spec with deep populate
-      let fullData: unknown;
-      try {
-        const deepParams = new URLSearchParams({
-          "populate[Overview][populate][Anatomy][populate]": "*",
-          "populate[Overview][populate][Type][populate]":    "*",
-          "populate[Overview][populate][States][populate]":  "*",
-          "populate[Specification]":                         "true",
-          "populate[Usage][populate]":                       "*",
-          "populate[Guidelines][populate]":                  "*",
-          "populate[Accessiblity][populate]":                "*",
-          "populate[CodeExamples]":                          "true",
-        });
-        const res = await fetch(
-          `${strapiBase}/api/components/${documentId}?${deepParams.toString()}`,
-          { headers: { Authorization: `Bearer ${strapiToken}` } }
-        );
-        if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
-        fullData = await res.json();
-      } catch (err) {
-        return {
-          isError: true,
-          content: [{ type: "text", text: `Strapi fetch failed: ${err}` }],
-        };
+      const parts: string[] = [entry.content];
+
+      if (htmlEntry) {
+        parts.push("\n\n## Code Examples\n\n```html\n" + htmlEntry.content + "\n```");
       }
 
-      const item = (fullData as { data?: StrapiComponent }).data;
-      if (!item) {
-        return {
-          content: [
-            { type: "text", text: `Component "${component}" returned no data.` },
-          ],
-        };
-      }
-
-      const blocks = textOnly(await formatComponent(item));
-      return { content: blocks };
+      return {
+        content: [{ type: "text" as const, text: parts.join("") }],
+      };
     }
   );
 }

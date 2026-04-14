@@ -125,6 +125,74 @@ generation_outcomes   -- feedback loop (wired but not yet read)
 
 ---
 
+### Gap — Screenshot-triggered pattern learning
+
+**Status:** Not yet implemented. Documented here so it is built as part of Phase 4.
+
+**The scenario:**
+A user shares a screenshot of a UI they want built. Pocket 3 generates the HTML/CSS using BrandSync tokens. The user approves. Nothing about that generated pattern persists anywhere reusable.
+
+**What the current flow produces:**
+```
+screenshot
+  → Pocket 3 generates HTML/CSS
+  → write_corpus_entry writes corpus/decisions/{session}.md
+     (records what was built, not the pattern itself)
+  → nothing else happens
+```
+
+**What the full loop should produce:**
+```
+screenshot
+  → Pocket 3 Step 1: search_guidelines → no match → flagged as novel
+  → Step 2: generates HTML/CSS from screenshot using --bs-* tokens
+  → Step 3: user approves
+  → Step 4: write_corpus_entry called with:
+       generated_code: "<full HTML/CSS block>"   ← MISSING TODAY
+       source: "screenshot"                       ← MISSING TODAY
+       is_new_pattern: true                       ← MISSING TODAY
+       status: "pending"
+  → cron job reads pending decisions where is_new_pattern = true
+  → Claude API synthesises a proper pattern .md
+  → writes to brandsync-brain/corpus/patterns/{name}.md
+  → seed-supabase runs → graph node auto-added → seeded to Supabase
+```
+
+**What needs to be built (in order):**
+
+1. **`write_corpus_entry` — 3 new fields**
+   - `generated_code: string` — the full HTML/CSS the agent produced
+   - `source: "screenshot" | "intent" | "jira"` — what triggered this session
+   - `is_new_pattern: boolean` — set true when Step 1 found no matching pattern
+
+2. **Pocket 3 Step 4 skill update**
+   - Pass `generated_code` (from Step 2 output) into `write_corpus_entry`
+   - Set `source = "screenshot"` when session was image-triggered
+   - Set `is_new_pattern = true` when no corpus match was found in Step 1
+
+3. **Cron: `src/workers/pattern-synthesis.ts`** (overlaps with 4d above)
+   - Query `corpus_entries` where `is_new_pattern = true` AND `status = "pending"`
+   - For each entry: call Claude API with `generated_code` + `intent`
+   - Claude writes a proper pattern `.md` (title, use case, components, tokens, layout, states)
+   - Write file to `brandsync-brain/corpus/patterns/{slug}.md`
+   - Mark entry `status = "synthesised"`
+
+4. **Trigger seed after synthesis**
+   - Cron calls `seed-supabase.ts` after writing each pattern
+   - Seed script auto-adds graph node + edges (already implemented)
+   - Graph snapshot updated in Supabase
+
+**How the handoff fits in:**
+
+`save_handoff` accepts a `files: [{ name, content }]` field — the agent can save generated code there. However `load_handoff` strips file content from its response (returns names only) so it is effectively write-only. The handoff also stores `retrieved_node_ids` (which graph nodes were used) but never corpus content — corpus access is always live via `query_graph` / `get_component` / `search_guidelines`.
+
+This means `write_corpus_entry` currently receives only what the agent manually passes in. A more robust approach would be for `write_corpus_entry` to automatically read `files[]` from the handoff for the given session/ticket and embed the generated code into the corpus entry without the agent needing to copy it manually. This removes the most likely failure point in the loop.
+
+**Decision point:**
+If Step 1 finds a *partial* match (existing pattern but user wants a variant), `is_new_pattern` should still be `true` and the synthesised `.md` should reference the parent pattern in its Related Patterns section. This creates a variant lineage in the graph rather than a duplicate node.
+
+---
+
 ## Phase 5 — AWS Migration
 
 **Goal:** Move from Supabase to AWS for enterprise compliance and EG infrastructure alignment.

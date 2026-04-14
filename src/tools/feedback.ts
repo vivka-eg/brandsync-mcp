@@ -2,13 +2,14 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
-import { tmpdir } from "os";
+import { homedir } from "os";
+import { upsertCorpusEntry } from "../db/index.js";
 
-const HANDOFF_DIR = join(tmpdir(), "brandsync-handoff");
-const BRAIN_ROOT  = process.env.BRAIN_ROOT ?? process.cwd();
-const CORPUS_ROOT = join(BRAIN_ROOT, "corpus");
+const HANDOFF_DIR   = join(homedir(), ".brandsync", "handoff");
+const BRAIN_ROOT    = process.env.BRAIN_ROOT ?? process.cwd();
+const CORPUS_ROOT   = join(BRAIN_ROOT, "corpus");
 const DECISIONS_DIR = join(CORPUS_ROOT, "decisions");
-const GAPS_DIR = join(CORPUS_ROOT, "gaps");
+const GAPS_DIR      = join(CORPUS_ROOT, "gaps");
 
 type HandoffFile = {
   ticket: string;
@@ -67,9 +68,6 @@ export function register(server: McpServer) {
       },
     },
     async ({ ticket, type, data }) => {
-      mkdirSync(DECISIONS_DIR, { recursive: true });
-      mkdirSync(GAPS_DIR, { recursive: true });
-
       const key = ticket.toUpperCase();
       const now = new Date().toISOString();
       const slug = key.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -79,6 +77,9 @@ export function register(server: McpServer) {
         Array.isArray(val) ? val.map(String) : val ? [String(val)] : [];
 
       let md: string;
+
+      const corpusType = type === "decision" ? "pattern" as const : "gap" as const;
+      const corpusSlug = `corpus/${type === "decision" ? "decisions" : "gaps"}/${filename}`;
 
       if (type === "decision") {
         md = lines(
@@ -105,7 +106,6 @@ export function register(server: McpServer) {
             : []),
           ...(data.notes ? [`## Notes`, ``, String(data.notes), ``] : []),
         );
-        writeFileSync(join(DECISIONS_DIR, filename), md, "utf-8");
       } else {
         const suggested = data.suggested_pattern_name
           ? String(data.suggested_pattern_name)
@@ -133,13 +133,30 @@ export function register(server: McpServer) {
             : []),
           `## Next Step`,
           ``,
-          `Create \`Patterns/${suggested}/meta.json\` and run \`npm run build:corpus\` to add this pattern to the corpus.`,
+          `Add this pattern to the corpus and run seed-supabase to include it in the knowledge base.`,
           ``,
         );
-        writeFileSync(join(GAPS_DIR, filename), md, "utf-8");
       }
 
-      // Mark corpus_entry_written on the handoff file
+      // 1. Write to Supabase
+      const { error: dbError } = await upsertCorpusEntry({
+        slug: corpusSlug,
+        type: corpusType,
+        path: corpusSlug,
+        content: md,
+        org_id: null,
+        created_by: key.toLowerCase(),
+      });
+
+      // 2. Write to local disk (backup, only if BRAIN_ROOT is set)
+      try {
+        mkdirSync(type === "decision" ? DECISIONS_DIR : GAPS_DIR, { recursive: true });
+        writeFileSync(join(type === "decision" ? DECISIONS_DIR : GAPS_DIR, filename), md, "utf-8");
+      } catch {
+        // Non-fatal — local disk write optional
+      }
+
+      // 3. Mark corpus_entry_written on the handoff file
       const hf = loadHandoffFile(key);
       if (hf) {
         hf.corpus_entry_written = true;
@@ -148,8 +165,9 @@ export function register(server: McpServer) {
       }
 
       const dir = type === "decision" ? "corpus/decisions/" : "corpus/gaps/";
+      const dbNote = dbError ? ` (Supabase error: ${dbError})` : "";
       return {
-        content: [{ type: "text" as const, text: `Corpus entry written: ${dir}${filename}` }],
+        content: [{ type: "text" as const, text: `Corpus entry written: ${dir}${filename}${dbNote}` }],
       };
     }
   );

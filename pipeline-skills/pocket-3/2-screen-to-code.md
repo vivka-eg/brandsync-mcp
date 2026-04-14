@@ -1,96 +1,112 @@
 # Pocket 3 — Step 2: Screen to Code
 
 ## Goal
-For each screen in the handoff, query the knowledge graph to find the matching BrandSync pattern, then use `get_component` for exact variant and token detail. Read the target project's actual structure, then build the UI into the project from scratch.
+Resolve the intent into BrandSync components, read the target project, then build the UI into it. The intent may come from a Jira handoff, a natural language request, or anything else.
 
 Do not invent structure. Do not generate boilerplate. Read first, then build.
 
 ---
 
-## 2a — Query the knowledge graph
+## 2a — Resolve screens from intent
 
-Before writing any code, call `query_graph` for the overall flow being built:
+If a Jira ticket was provided and `load_handoff(ticket, 1)` returned screen names, use those.
 
-```
-query_graph(question: "<brief description of what is being built>", mode: "bfs", depth: 3)
-```
+Otherwise derive screens from the user's intent directly:
 
-Examples:
-- `query_graph("service request form dashboard list detail")`
-- `query_graph("user login authentication form")`
-- `query_graph("data table with filters and pagination")`
+| Intent | Screens to generate |
+|---|---|
+| "add a table" | one component file with the table |
+| "build a login screen" | Login screen + optional ForgotPassword |
+| "create a service request form" | Form, Confirm, Detail |
+| "make a dashboard" | Dashboard with metrics + list |
+| Anything else | ask the user: "Which screens should I generate?" |
 
-The graph returns matching patterns, component relationships, known variants, and cross-pattern connections from all previous pipeline runs.
-
-**Record the node IDs returned.** After querying, immediately save them to the handoff:
-
-```
-save_handoff(ticket, 3, { retrieved_node_ids: [<list of node IDs from query result>] })
-```
-
-This is required for the learning loop — it connects the outcome back to which graph nodes were used.
-
-If no nodes match, note it as a potential gap. Continue with components listed in the handoff's `component_names`.
+Use the minimum number of screens that fully covers the intent. Do not add screens the user didn't ask for.
 
 ---
 
-## 2b — Read the target project structure
+## 2b — Query the knowledge graph
+
+Before writing any code, call `query_graph` with the intent:
+
+```
+query_graph(question: "<intent in plain words>", mode: "bfs", depth: 3)
+```
+
+Examples:
+- `query_graph("data table with filters")`
+- `query_graph("login authentication form")`
+- `query_graph("service request form dashboard list detail")`
+- `query_graph("dashboard metrics cards")`
+
+The graph returns matching patterns, component relationships, known variants, and learnings from all previous runs across all users.
+
+**Record the node IDs returned.** Save them immediately:
+
+```
+save_handoff(session_id, 3, { retrieved_node_ids: [<node IDs>], intent: "<user's intent>" })
+```
+
+Use `session_id` if no ticket exists. If a ticket exists, use the ticket key.
+
+If no nodes match, note it as a potential gap. Continue with components inferred from the intent.
+
+---
+
+## 2c — Read the target project structure
 
 Before writing a single line of code, read the actual project:
 
-1. **Read `package.json`** — confirm framework, check what component libraries, styling tools, and routing are already installed.
-2. **Scan `src/`** (or equivalent) — identify:
-   - Where screens/pages live (e.g. `src/pages/`, `src/views/`, `src/screens/`)
-   - Where shared components live (e.g. `src/components/`)
-   - How existing files are structured (naming convention, export style, file colocation)
-   - Whether there's a global styles entry point where tokens are imported
-3. **Read 1–2 existing screen files** — understand the actual code style (hooks pattern, how state is managed, how routing works, prop conventions)
-4. **Check if `brandsync-tokens` is already imported** in the global entry point
+1. **Read `package.json`** — confirm framework, installed libraries, routing, styling approach.
+2. **Scan `src/`** — identify where screens/pages live, where shared components live, naming conventions, file structure.
+3. **Read 1–2 existing screen files** — understand actual code style: hooks, state management, routing, prop conventions.
+4. **Check if `brandsync-tokens` is already imported** in the global entry point.
 
 Only after reading the project should you write any code.
 
 ---
 
-## 2c — Resolve components
+## 2d — Resolve components
 
-The graph result identifies which components are needed. For each component, call `get_component(name)` to get:
-- Exact token names to use (`--bs-*`)
-- All variants and their CSS classes
+For each component the graph or intent identifies, call `get_component(name)` to get:
+- Exact token names (`--bs-*`)
+- All variants and CSS classes
 - States (loading, disabled, error, focus)
 - Code examples per variant
 - Accessibility requirements
 
-Do not guess token names or variant class names. Every `var(--bs-*)` and every CSS class in the generated code must come from a `get_component` or `get_tokens` call.
+Do not guess token names or variant class names. Every `var(--bs-*)` and CSS class must come from a `get_component` or `get_tokens` call.
 
-Use `search_guidelines(query)` if you need to find a pattern by name and the graph result was not specific enough.
+Use `search_guidelines(query)` if the graph result was not specific enough.
 
 ---
 
-## 2d — Build into the project
+## 2e — Build into the project
 
-Write files directly into the target project following its actual conventions:
+Write files directly into the target project following its conventions:
 
 - Place files where the project's existing screens live
-- Follow the naming pattern of existing files (e.g. if existing screens are `UserList.tsx`, name new ones `Login.tsx` not `LoginScreen.tsx`)
-- Use the same styling approach as the existing project (if it uses CSS Modules, use CSS Modules; if Tailwind, use Tailwind; if Styled Components, use Styled Components)
+- Follow the naming pattern of existing files
+- Use the same styling approach (CSS Modules, Tailwind, Styled Components, SCSS — match what's already there)
 - Import tokens via `var(--bs-*)` — no hardcoded values
-- Implement all states from the pattern spec: loading, empty, error, default
-- Match the component structure to what the graph pattern describes — do not simplify or skip sections
+- Implement all states: loading, empty, error, default
+- Match component structure to what the graph pattern describes
 
-For each screen file created, also check:
-- Does it need a route registered? If so, note it.
-- Does it need types/interfaces that belong in a shared types file?
-- Does it need a shared sub-component that other screens will reuse?
+For each file created, also check:
+- Does it need a route registered?
+- Does it need shared types?
+- Does it need a shared sub-component?
 
 ---
 
 ## Rules
 
-- **Query the graph first** — it finds the right pattern and related context.
-- **Save retrieved_node_ids to handoff immediately after querying** — the learning loop depends on it.
+- **Query the graph first** — even for simple intents like "add a table". Previous learnings may apply.
+- **Save retrieved_node_ids immediately after querying** — the learning loop depends on it.
 - **Use get_component for exact variant/token detail** — the graph is too coarse for production code.
-- **Read the project first. Always.** Never write code into a project you haven't read.
+- **Read the project first. Always.**
 - **Never hardcode values** — all colours, spacing, radius from `var(--bs-*)`
-- **If a required pattern doesn't exist in the graph**, note it as a gap in `feedback_note` when saving the attempt — do not approximate
-- **One screen = one file** minimum. Split into sub-components if the pattern spec says so
-- **Implement all states** — a screen with no loading/error state is incomplete
+- **If a required pattern doesn't exist**, note it as a gap in `feedback_note` — do not approximate
+- **One screen = one file** minimum. Split into sub-components if the pattern spec says so.
+- **Implement all states** — a screen with no loading/error state is incomplete.
+- **Ticket is optional** — session_id is sufficient. Never block on a missing ticket.

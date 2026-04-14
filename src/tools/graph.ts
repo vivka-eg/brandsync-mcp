@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import { getLatestGraph } from "../db/index.js";
 
 const BRAIN_ROOT = process.env.BRAIN_ROOT ?? process.cwd();
 const GRAPH_PATH = join(BRAIN_ROOT, "graphify-out", "graph.json");
@@ -33,22 +34,22 @@ type Graph = {
   communities: Map<number, string[]>;
 };
 
-function loadGraph(): Graph | null {
-  if (!existsSync(GRAPH_PATH)) return null;
-  const raw = JSON.parse(readFileSync(GRAPH_PATH, "utf-8"));
+// ─── In-memory graph cache (5-minute TTL) ─────────────────────────────────────
 
+let _graphCache: Graph | null = null;
+let _graphCacheTime = 0;
+const CACHE_TTL = 5 * 60 * 1000;
+
+function buildGraph(raw: { nodes?: NodeData[]; links?: EdgeData[]; edges?: EdgeData[] }): Graph {
   const nodes = new Map<string, NodeData>();
-  for (const n of raw.nodes ?? []) {
-    nodes.set(n.id, n);
-  }
+  for (const n of raw.nodes ?? []) nodes.set(n.id, n);
 
   const adj = new Map<string, Map<string, EdgeData>>();
   for (const e of raw.links ?? raw.edges ?? []) {
-    const src = typeof e.source === "object" ? e.source.id : e.source;
-    const tgt = typeof e.target === "object" ? e.target.id : e.target;
+    const src = typeof e.source === "object" ? (e.source as NodeData).id : e.source;
+    const tgt = typeof e.target === "object" ? (e.target as NodeData).id : e.target;
     if (!adj.has(src)) adj.set(src, new Map());
     adj.get(src)!.set(tgt, e);
-    // undirected — add reverse
     if (!adj.has(tgt)) adj.set(tgt, new Map());
     adj.get(tgt)!.set(src, e);
   }
@@ -65,11 +66,31 @@ function loadGraph(): Graph | null {
   return { nodes, adj, communities };
 }
 
+async function loadGraph(): Promise<Graph | null> {
+  const now = Date.now();
+  if (_graphCache && now - _graphCacheTime < CACHE_TTL) return _graphCache;
+
+  // 1. Try Supabase
+  const raw = await getLatestGraph() as { nodes?: NodeData[]; links?: EdgeData[]; edges?: EdgeData[] } | null;
+  if (raw) {
+    _graphCache = buildGraph(raw);
+    _graphCacheTime = now;
+    return _graphCache;
+  }
+
+  // 2. Local fallback
+  if (!existsSync(GRAPH_PATH)) return null;
+  const localRaw = JSON.parse(readFileSync(GRAPH_PATH, "utf-8"));
+  _graphCache = buildGraph(localRaw);
+  _graphCacheTime = now;
+  return _graphCache;
+}
+
 function notFound(): { content: [{ type: "text"; text: string }] } {
   return {
     content: [{
       type: "text" as const,
-      text: `graph.json not found at ${GRAPH_PATH}. Set BRAIN_ROOT or run update_graph first.`,
+      text: `Graph not found. No snapshot in Supabase and no local graph.json at ${GRAPH_PATH}. Run update_graph to rebuild.`,
     }],
   };
 }
@@ -154,7 +175,7 @@ export function register(server: McpServer) {
       token_budget: z.number().int().optional().default(2000),
     },
   }, async ({ question, mode, depth, token_budget }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const terms = question.toLowerCase().split(/\s+/).filter(t => t.length > 2);
@@ -174,7 +195,7 @@ export function register(server: McpServer) {
       node_id: z.string().describe("Exact node ID from the graph"),
     },
   }, async ({ node_id }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const d = g.nodes.get(node_id);
@@ -203,7 +224,7 @@ export function register(server: McpServer) {
       depth: z.number().int().min(1).max(4).optional().default(1),
     },
   }, async ({ node_id, depth }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
     if (!g.nodes.has(node_id)) return { content: [{ type: "text" as const, text: `Node '${node_id}' not found.` }] };
 
@@ -218,7 +239,7 @@ export function register(server: McpServer) {
       community_id: z.number().int(),
     },
   }, async ({ community_id }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const members = g.communities.get(community_id);
@@ -236,7 +257,7 @@ export function register(server: McpServer) {
       top_n: z.number().int().min(1).max(30).optional().default(10),
     },
   }, async ({ top_n }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const ranked = [...g.nodes.entries()]
@@ -253,7 +274,7 @@ export function register(server: McpServer) {
     description: "Return node count, edge count, community count, and graph freshness.",
     inputSchema: {},
   }, async () => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const edgeCount = [...g.adj.values()].reduce((s, m) => s + m.size, 0) / 2;
@@ -275,7 +296,7 @@ export function register(server: McpServer) {
       max_hops: z.number().int().min(1).max(10).optional().default(6),
     },
   }, async ({ source, target, max_hops }) => {
-    const g = loadGraph();
+    const g = await loadGraph();
     if (!g) return notFound();
 
     const find = (term: string) => {
