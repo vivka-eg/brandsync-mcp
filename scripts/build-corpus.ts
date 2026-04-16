@@ -37,8 +37,11 @@ const strapiArg = args.find(a => a.startsWith("--strapi="))?.split("=")[1]
                ?? args[args.indexOf("--strapi") + 1];
 
 const STRAPI_BASE = strapiArg
-  ?? process.env.STRAPI_BASE_URL?.replace(/\/api.*/, "")
-  ?? "http://localhost:1337";
+  ?? (() => {
+    const raw = process.env.STRAPI_BASE_URL;
+    if (!raw) return "http://localhost:1337";
+    try { const u = new URL(raw); return `${u.protocol}//${u.host}`; } catch { return raw; }
+  })();
 
 const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN ?? "";
 
