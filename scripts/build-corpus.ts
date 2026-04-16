@@ -56,10 +56,60 @@ type CodeExample = {
   Code: string;
 };
 
+type DoAndDontItem = {
+  Description?: string;
+  CodeSnippet?: string;
+  CodeExtension?: string;
+};
+
+type DoAndDont = {
+  Do: DoAndDontItem;
+  Dont: DoAndDontItem;
+};
+
+type GuidelineElement = {
+  ElementTitle?: string;
+  Description?: string;
+  DoAndDont?: DoAndDont[];
+};
+
+type Guideline = {
+  Title?: string;
+  GuidelineElement?: GuidelineElement[];
+};
+
+// Note: Strapi field is misspelled as "Accessiblity" — must match exactly
+type AccessibilityElement = {
+  ElementTitle?: string;
+  Description?: string;
+  DoAndDont?: DoAndDont[];
+};
+
+type AccessibilitySection = {
+  Title?: string;
+  AccessiblityElement?: AccessibilityElement[];
+};
+
+type TypeElement = {
+  PrimaryTitle?: string;
+  SecondaryTitle?: string;
+  Decription?: string; // Note: Strapi typo — missing 's'
+};
+
+type Overview = {
+  Anatomy?: { Description?: string };
+  Type?: { Description?: string; TypeElements?: TypeElement[] };
+  States?: { Description?: string };
+};
+
 type StrapiComponent = {
   documentId: string;
   Title: string;
   Description?: string;
+  Usage?: { Content?: string };
+  Guidelines?: Guideline[];
+  Accessiblity?: AccessibilitySection[]; // Note: Strapi typo
+  Overview?: Overview;
   CodeExamples?: CodeExample[];
 };
 
@@ -145,6 +195,99 @@ function extractClasses(code: string): string[] {
   return [...new Set(classes.filter(Boolean))];
 }
 
+// ─── "Why" layer builders ─────────────────────────────────────────────────────
+
+function buildOverviewSection(overview: Overview | undefined): string {
+  if (!overview) return "";
+  const lines: string[] = ["## Overview", ""];
+
+  const anatomy = overview.Anatomy?.Description;
+  if (anatomy) lines.push(`**Anatomy:** ${anatomy}`, "");
+
+  const type = overview.Type;
+  if (type?.Description) lines.push(`**Types:** ${type.Description}`, "");
+  if (type?.TypeElements?.length) {
+    for (const el of type.TypeElements) {
+      const label = [el.PrimaryTitle, el.SecondaryTitle].filter(Boolean).join(" — ");
+      // Strapi typo: field is "Decription" not "Description"
+      if (label || el.Decription) {
+        lines.push(`- **${label}:** ${el.Decription ?? ""}`.trimEnd());
+      }
+    }
+    lines.push("");
+  }
+
+  const states = overview.States?.Description;
+  if (states) lines.push(`**States:** ${states}`, "");
+
+  return lines.join("\n");
+}
+
+function buildUsageSection(usage: { Content?: string } | undefined): string {
+  if (!usage?.Content?.trim()) return "";
+  // Strip S3 image markdown and Strapi shortcodes — they're URLs, not useful in corpus
+  const cleaned = usage.Content
+    .split("\n")
+    .filter(line => !line.trim().startsWith("!["))     // remove image lines
+    .filter(line => !/\{\{[^}]+\}\}/.test(line))       // remove {{shortcode}} lines
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")                        // collapse excess blank lines
+    .trim();
+  if (!cleaned) return "";
+  return ["## Usage", "", cleaned, ""].join("\n");
+}
+
+function buildGuidelinesSection(guidelines: Guideline[] | undefined): string {
+  if (!guidelines?.length) return "";
+  const lines: string[] = ["## Guidelines", ""];
+
+  for (const section of guidelines) {
+    if (section.Title?.trim()) lines.push(`### ${section.Title}`, "");
+    for (const el of section.GuidelineElement ?? []) {
+      if (el.ElementTitle) lines.push(`#### ${el.ElementTitle}`, "");
+      if (el.Description) lines.push(el.Description, "");
+      for (const pair of el.DoAndDont ?? []) {
+        if (pair.Do?.Description) lines.push(`**Do:** ${pair.Do.Description}`);
+        if (pair.Dont?.Description) lines.push(`**Don't:** ${pair.Dont.Description}`);
+        lines.push("");
+      }
+    }
+  }
+
+  return lines.join("\n");
+}
+
+function buildAccessibilitySection(sections: AccessibilitySection[] | undefined): string {
+  if (!sections?.length) return "";
+  const lines: string[] = ["## Accessibility", ""];
+
+  for (const section of sections) {
+    if (section.Title) lines.push(`### ${section.Title}`, "");
+    // Strapi typo: field is "AccessiblityElement"
+    for (const el of section.AccessiblityElement ?? []) {
+      if (el.ElementTitle) lines.push(`#### ${el.ElementTitle}`, "");
+      if (el.Description) lines.push(el.Description, "");
+      for (const pair of el.DoAndDont ?? []) {
+        if (pair.Do?.Description) lines.push(`**Do:** ${pair.Do.Description}`);
+        if (pair.Do?.CodeSnippet) {
+          lines.push(`\`\`\`${pair.Do.CodeExtension ?? ""}`);
+          lines.push(pair.Do.CodeSnippet.trim());
+          lines.push("```");
+        }
+        if (pair.Dont?.Description) lines.push(`**Don't:** ${pair.Dont.Description}`);
+        if (pair.Dont?.CodeSnippet) {
+          lines.push(`\`\`\`${pair.Dont.CodeExtension ?? ""}`);
+          lines.push(pair.Dont.CodeSnippet.trim());
+          lines.push("```");
+        }
+        lines.push("");
+      }
+    }
+  }
+
+  return lines.join("\n");
+}
+
 // ─── Component → Markdown ────────────────────────────────────────────────────
 
 function buildComponentMarkdown(component: StrapiComponent): string {
@@ -172,6 +315,18 @@ function buildComponentMarkdown(component: StrapiComponent): string {
   if (component.Description) {
     lines.push(`## Description`, ``, component.Description, ``);
   }
+
+  const overviewSection = buildOverviewSection(component.Overview);
+  if (overviewSection) lines.push(overviewSection);
+
+  const usageSection = buildUsageSection(component.Usage);
+  if (usageSection) lines.push(usageSection);
+
+  const guidelinesSection = buildGuidelinesSection(component.Guidelines);
+  if (guidelinesSection) lines.push(guidelinesSection);
+
+  const accessibilitySection = buildAccessibilitySection(component.Accessiblity);
+  if (accessibilitySection) lines.push(accessibilitySection);
 
   lines.push(
     `## Variants`,
@@ -397,10 +552,31 @@ async function main() {
 }
 
 async function fetchComponents(): Promise<StrapiComponent[]> {
-  const params = new URLSearchParams({
-    "pagination[pageSize]": "100",
-    "populate[CodeExamples]": "true",
-  });
+  const params = new URLSearchParams({ "pagination[pageSize]": "100" });
+
+  // Populate all fields needed for the "why" layer — not just code examples.
+  // Field names must match Strapi exactly (including typos like "Accessiblity").
+  const populateFields = [
+    "Usage",
+    "Guidelines",
+    "Guidelines.GuidelineElement",
+    "Guidelines.GuidelineElement.DoAndDont",
+    "Guidelines.GuidelineElement.DoAndDont.Do",
+    "Guidelines.GuidelineElement.DoAndDont.Dont",
+    "Accessiblity",
+    "Accessiblity.AccessiblityElement",
+    "Accessiblity.AccessiblityElement.DoAndDont",
+    "Accessiblity.AccessiblityElement.DoAndDont.Do",
+    "Accessiblity.AccessiblityElement.DoAndDont.Dont",
+    "Overview",
+    "Overview.Anatomy",
+    "Overview.Type",
+    "Overview.Type.TypeElements",
+    "Overview.States",
+    "CodeExamples",
+  ];
+  populateFields.forEach((field, i) => params.set(`populate[${i}]`, field));
+
   const headers: Record<string, string> = {};
   if (STRAPI_TOKEN) headers["Authorization"] = `Bearer ${STRAPI_TOKEN}`;
   const res = await fetch(`${STRAPI_BASE}/api/components?${params}`, { headers });
