@@ -62,13 +62,26 @@ d) For each component the graph identifies, call get_component(name) for exact t
 
 e) Write files into the project following its conventions — same folder structure, same naming, same styling approach (CSS Modules / Tailwind / SCSS — match what exists). Implement all states: loading, empty, error, default. Check if routes, shared types, or sub-components are needed.
 
-Rules: Query graph first always. Save retrieved_node_ids immediately. Read project before writing code. Never hardcode values.
+f) ALWAYS run a guidelines check after writing code — even if the graph returned a direct match:
+   Call search_guidelines with the names of every component used, e.g.:
+     search_guidelines("button")
+     search_guidelines("table")
+     search_guidelines("<component name>")
+   Focus on: button variants and states, component usage rules, do/don't pairs, spacing/density guidance.
+   If a guideline is violated in the generated code, fix it silently before showing the output.
+   If a guideline cannot be satisfied without changing the approach, note it briefly when presenting the code.
+   This step is not optional. The graph is too coarse for production-level guideline compliance.
+
+Rules: Query graph first always. Save retrieved_node_ids immediately. Read project before writing code. Never hardcode values. Always run search_guidelines before showing output.
 
 ## Step 3 — Approval Check
 
 Show each generated file:
   ── src/components/DataTable.tsx ──
   <code>
+
+If any guideline notes came from Step 2f, show them as a brief list below the code:
+  ⚠ Guidelines note: <what was flagged and how it was handled or why it couldn't be fixed>
 
 Ask exactly one question: "Does this look good? Reply yes to accept, or no with notes."
 
