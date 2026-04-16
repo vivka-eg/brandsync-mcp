@@ -1,11 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { strapiQuery } from "../strapi.js";
+import { searchCorpus } from "../db/index.js";
 
 export function register(server: McpServer) {
   server.tool(
     "search_guidelines",
-    "Searches Brandsync design system guidelines in Strapi by keyword. Returns matching foundation articles.",
+    "Searches Brandsync design system guidelines and patterns by keyword. Returns matching corpus entries.",
     {
       query: z
         .string()
@@ -22,37 +22,22 @@ export function register(server: McpServer) {
         .describe("Maximum number of results to return (default 5, max 40)"),
     },
     async ({ query, maxResults }) => {
-      let data: unknown;
-      try {
-        const params = new URLSearchParams({
-          "populate[0]":                        "Article",
-          "populate[1]":                        "Article.Blocks",
-          "populate[2]":                        "Article.Video",
-          "pagination[pageSize]":               String(maxResults),
-          "filters[Article][Title][$containsi]": query,
-        });
-        data = await strapiQuery("foundations", params);
-      } catch (err) {
-        return {
-          isError: true,
-          content: [{ type: "text", text: `Strapi request failed: ${err}` }],
-        };
-      }
+      const entries = await searchCorpus(query, ["pattern", "component"], maxResults ?? 5);
 
-      const items = (data as { data?: unknown[] }).data ?? [];
-      if (items.length === 0) {
+      if (!entries.length) {
         return {
           content: [
             {
-              type: "text",
-              text: `No guidelines found matching "${query}" in Strapi.`,
+              type: "text" as const,
+              text: `No guidelines found matching "${query}".`,
             },
           ],
         };
       }
 
+      const sections = entries.map(e => `### ${e.slug}\n\n${e.content}`);
       return {
-        content: [{ type: "text", text: JSON.stringify(items, null, 2) }],
+        content: [{ type: "text" as const, text: sections.join("\n\n---\n\n") }],
       };
     }
   );

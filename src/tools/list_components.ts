@@ -1,30 +1,41 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { strapiQuery } from "../strapi.js";
+import { listCorpusByType } from "../db/index.js";
+
+/** Extract a human-readable component name from a corpus slug.
+ *  e.g. "corpus/components/input-fields.md" → "Input Fields"
+ */
+function nameFromSlug(slug: string): string {
+  const file = slug.split("/").pop() ?? slug;
+  const base = file.replace(/\.md$/, "");
+  return base
+    .split("-")
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
 export function register(server: McpServer) {
   server.registerTool(
     "list_components",
-    { description: "Lists all available Brandsync design system components by name." },
+    { description: "Lists all available Brandsync design system components by name.", inputSchema: {} },
     async () => {
-      let data: unknown;
-      try {
-        const params = new URLSearchParams({ "pagination[pageSize]": "100" });
-        data = await strapiQuery("components", params);
-      } catch (err) {
+      const entries = await listCorpusByType("component");
+
+      if (!entries.length) {
         return {
-          isError: true,
-          content: [{ type: "text", text: `Strapi request failed: ${err}` }],
+          content: [{ type: "text" as const, text: "No components found in corpus. Run seed-supabase to populate." }],
         };
       }
 
-      const items = (data as { data?: { Title: string }[] }).data ?? [];
-      const names = items.map((i) => i.Title).sort();
+      const names = entries.map(e => nameFromSlug(e.slug)).sort();
 
       return {
         content: [
           {
-            type: "text",
-            text: `${names.length} components available:\n\n${names.map((n) => `- ${n}`).join("\n")}\n\nUse get_component("<name>") to get the full spec and tokens for any component.`,
+            type: "text" as const,
+            text:
+              `${names.length} components available:\n\n` +
+              names.map(n => `- ${n}`).join("\n") +
+              `\n\nUse get_component("<name>") to get the full spec and tokens for any component.`,
           },
         ],
       };

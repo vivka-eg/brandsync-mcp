@@ -44,28 +44,35 @@ export function register(server: McpServer) {
       const lines: string[] = [];
 
       try {
-        // Step 1 — graphify --update (incremental, only changed corpus files)
+        // Step 1 — inject new corpus decisions/gaps into the graph feedback loop
+        // graphify save-result registers learning so future queries surface it
         const graphifyBin = resolveGraphify();
-        const graphifyOut = execSync(
-          `"${graphifyBin}" "${CORPUS_DIR}" --update`,
-          { cwd: BRAIN_ROOT, env, encoding: "utf-8", timeout: 120_000 }
-        );
-        const summary = graphifyOut
-          .split("\n")
-          .filter(l =>
-            l.includes("node") || l.includes("edge") || l.includes("Merged") ||
-            l.includes("Cache") || l.includes("community") || l.includes("new node") ||
-            l.includes("new edge") || l.includes("Graph") || l.includes("complete")
-          )
-          .join("\n")
-          .trim();
-        lines.push(summary || graphifyOut.trim());
+        const corpusDecisionsDir = join(CORPUS_DIR, "decisions");
+        const corpusGapsDir = join(CORPUS_DIR, "gaps");
+        const { readdirSync, readFileSync: rfs, existsSync: exs } = await import("fs");
+        const saved: string[] = [];
+
+        for (const dir of [corpusDecisionsDir, corpusGapsDir]) {
+          if (!exs(dir)) continue;
+          const type = dir.endsWith("gaps") ? "gap" : "decision";
+          for (const file of readdirSync(dir).filter((f: string) => f.endsWith(".md"))) {
+            const content = rfs(join(dir, file), "utf-8");
+            const firstLine = content.split("\n").find((l: string) => l.trim()) ?? file;
+            const memDir = join(BRAIN_ROOT, "graphify-out", "memory");
+            execSync(
+              `"${graphifyBin}" save-result --question "corpus ${type}: ${file}" --answer ${JSON.stringify(content.slice(0, 800))} --type query --memory-dir ${JSON.stringify(memDir)}`,
+              { cwd: BRAIN_ROOT, env, encoding: "utf-8", timeout: 30_000 }
+            );
+            saved.push(`  • ${type}/${file} — ${firstLine.replace(/^#+\s*/, "").slice(0, 60)}`);
+          }
+        }
+        lines.push(`Injected ${saved.length} corpus entries into graph memory:\n${saved.join("\n")}`);
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         return {
           content: [{
             type: "text" as const,
-            text: `graphify --update failed:\n${msg}`,
+            text: `graph memory injection failed:\n${msg}`,
           }],
         };
       }

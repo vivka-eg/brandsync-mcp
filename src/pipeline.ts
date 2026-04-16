@@ -6,35 +6,42 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const skillsDir = join(__dirname, "../pipeline-skills");
 
-function readSkill(filename: string): string {
-  return readFileSync(join(skillsDir, filename), "utf-8");
-}
+const SYSTEM_PROMPT = readFileSync(join(skillsDir, "CLAUDE-PROJECT-INSTRUCTIONS.md"), "utf-8");
 
-const SYSTEM_PROMPT = readSkill("CLAUDE-PROJECT-INSTRUCTIONS.md");
-const SKILLS = {
-  // Pocket 1 — Claude Desktop
-  "1-design-brief":              readSkill("1-design-brief.md"),
-  "2-user-persona":              readSkill("2-user-persona.md"),
-  "3-user-flow":                 readSkill("3-user-flow.md"),
-  "4-lofi-screens":              readSkill("4-lofi-screens.md"),
-  "6-figjam-board":              readSkill("6-figjam-board.md"),
-  // Pocket 3 — Claude Code
-  "pocket3-framework-detect":    readSkill("pocket-3/1-framework-detect.md"),
-  "pocket3-screen-to-code":      readSkill("pocket-3/2-screen-to-code.md"),
-  "pocket3-approval-check":      readSkill("pocket-3/3-approval-check.md"),
-};
+const POCKET_3_STEPS = [
+  "1-framework-detect.md",
+  "2-screen-to-code.md",
+  "3-approval-check.md",
+  "4-corpus-learning.md",
+].map(f => readFileSync(join(skillsDir, "pocket-3", f), "utf-8")).join("\n\n---\n\n");
+
+const POCKET_3_PROMPT = `# BrandSync Pocket 3 — Code Generation Agent
+
+You are a code generation agent for EG BrandSync. You activate whenever a user asks to build, add, or generate any UI — a table, form, screen, modal, dashboard, or anything visual. You do not need a Jira ticket. Any expression of UI intent is enough to start.
+
+## How to start
+
+1. Identify the **intent** from what the user said. Examples:
+   - "add a table" → intent: data table component
+   - "build a service request form" → intent: form pattern
+   - "APT-202" → intent: fetch from Jira handoff via load_handoff(ticket, 1)
+   - "make a dashboard with metrics" → intent: dashboard pattern
+
+2. Generate a **session_id** for this run:
+   \`session_\${Date.now()}\` — use this wherever ticket would be referenced if no ticket exists.
+
+3. If a Jira ticket was provided, call \`load_handoff(ticket, 1)\` to get screen names and component hints. Otherwise derive screens/components from the intent directly.
+
+4. Run the following steps in order:
+
+${POCKET_3_STEPS}`;
 
 export function register(server: McpServer) {
-
-  // ─── Pipeline prompt ────────────────────────────────────────────────────────
-  // Loaded automatically by any Claude client that connects.
-  // Replaces the need for a Claude Project system prompt.
-
   server.registerPrompt(
     "design-pipeline",
     {
       title: "BrandSync Design Pipeline",
-      description: "Full EG BrandSync design pipeline — Pocket 1 (Claude Desktop): Jira → FigJam flow. Pocket 3 (Claude Code): FigJam → production code with BrandSync tokens.",
+      description: "EG BrandSync pipeline — Jira ticket → Mermaid flow diagram in FigJam → handoff for code generation.",
     },
     () => ({
       messages: [{
@@ -44,19 +51,17 @@ export function register(server: McpServer) {
     })
   );
 
-  // ─── Skill resources ────────────────────────────────────────────────────────
-  // Skills are available as MCP resources so the agent can read them on demand.
-  // Replaces the need for Claude Project knowledge file uploads.
-
-  for (const [name, content] of Object.entries(SKILLS)) {
-    const uri = `skill://${name}`;
-    server.registerResource(
-      uri,
-      uri,
-      { description: `BrandSync pipeline skill: ${name}`, mimeType: "text/markdown" },
-      () => ({
-        contents: [{ uri, text: content, mimeType: "text/markdown" }]
-      })
-    );
-  }
+  server.registerPrompt(
+    "pocket-3",
+    {
+      title: "BrandSync Pocket 3 — Code Generation",
+      description: "EG BrandSync Pocket 3 — loads Pocket 1 handoff → detects framework → generates screen code → approval loop → corpus learning.",
+    },
+    () => ({
+      messages: [{
+        role: "user",
+        content: { type: "text", text: POCKET_3_PROMPT }
+      }]
+    })
+  );
 }

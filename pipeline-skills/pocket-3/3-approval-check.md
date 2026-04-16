@@ -1,19 +1,19 @@
 # Pocket 3 — Step 3: Approval Check & Feedback Loop
 
 ## Goal
-Show the generated code to the user, collect feedback, save the attempt, and trigger the appropriate follow-up action.
+Show the generated code to the user, collect feedback, save the attempt, and trigger the appropriate follow-up.
 
 ## Present the output
 
-Show each generated file with its name and content. Keep presentation clean:
+Show each generated file with its name and content:
 
 ```
-Generated files for APT-202:
+Generated files:
 
-── src/screens/Login.tsx ─────────────────────────────
+── src/components/DataTable.tsx ──────────────────────
 <code here>
 
-── src/screens/Login.module.css ──────────────────────
+── src/components/DataTable.module.css ───────────────
 <code here>
 ```
 
@@ -24,68 +24,69 @@ Do not ask multiple questions. Do not explain design decisions unless asked. Wai
 
 ## On YES (accepted)
 
-1. Load retrieved_node_ids from handoff: `load_handoff(ticket, 3)` → read `retrieved_node_ids` field.
-2. Call `save_handoff(ticket, 3, { framework, files, feedback: "accepted", retrieved_node_ids: [...] })`
-3. The tool will respond with a prompt to write a corpus entry.
-4. Call `write_corpus_entry` with structured data — no prose, exact fields only:
+1. Load `retrieved_node_ids` from handoff: `load_handoff(session_id, 3)` → read `retrieved_node_ids`.
+2. Call `save_handoff(session_id, 3, { framework, files, feedback: "accepted", retrieved_node_ids: [...] })`
+3. Call `write_corpus_entry` with structured fields — no prose:
    ```
-   write_corpus_entry(ticket, "decision", {
-     screens:      ["Dashboard", "Create", "Detail"],   ← screen names from handoff
-     framework:    "angular",                            ← from handoff
-     components:   ["BsButton", "BsTag", "BsInput"],    ← BrandSync components used
-     tokens:       ["--bs-color-primary", "--bs-surface-base"],  ← tokens referenced
-     pattern_ids:  retrieved_node_ids                   ← from handoff
-   })
+   write_corpus_entry(
+     ticket: session_id,        ← ticket key if one exists, otherwise session_id
+     type: "decision",
+     data: {
+       intent:       "<what the user asked for>",
+       screens:      ["DataTable"],
+       framework:    "angular",
+       components:   ["BsTable", "BsButton"],
+       tokens:       ["--bs-surface-base", "--bs-border-default"],
+       pattern_ids:  retrieved_node_ids
+     }
+   )
    ```
-   No summary prose. The fields are the record.
-5. Print: `✅ Done — code accepted and recorded in corpus/decisions/`
-6. Proceed to **Step 4 — Corpus Learning** *(skill: pocket-3/4-corpus-learning)*
+4. Print: `✅ Done — recorded in corpus.`
+5. Proceed to **Step 4 — Corpus Learning**.
 
 ## On NO (rejected)
 
 1. Note the user's feedback in `feedback_note`.
-2. Load retrieved_node_ids from handoff: `load_handoff(ticket, 3)` → read `retrieved_node_ids` field.
-3. Call `save_handoff(ticket, 3, { framework, files, feedback: "rejected", feedback_note: "<user note>", retrieved_node_ids: [...] })`
+2. Load `retrieved_node_ids`: `load_handoff(session_id, 3)` → read `retrieved_node_ids`.
+3. Call `save_handoff(session_id, 3, { framework, files, feedback: "rejected", feedback_note: "<user note>", retrieved_node_ids: [...] })`
 4. Read the tool response:
-   - If status is `rejected` (attempt < 3): print the rejection count and ask the user if they want another attempt or want to stop.
-   - If status is `gap_detected` (attempt >= 3): see Gap Detection section below.
-5. Proceed to **Step 4 — Corpus Learning** *(skill: pocket-3/4-corpus-learning)*
+   - `rejected` (attempt < 3): print rejection count, ask if user wants another attempt.
+   - `gap_detected` (attempt ≥ 3): see Gap Detection below.
+5. Proceed to **Step 4 — Corpus Learning**.
 
-## Gap Detection (triggered at attempt 3+)
+## Gap Detection (attempt 3+)
 
 When `save_handoff` returns `status: gap_detected`:
 
-Print this message (and nothing else):
+Print:
 ```
-⚠️  Pattern gap detected for APT-202
+⚠️  Pattern gap detected
 
 This UI has been rejected 3 times. The required pattern may not exist in the BrandSync corpus yet.
-
-I'll record this as a gap so it can be prioritised for design.
+Recording this as a gap so it can be prioritised for design.
 ```
 
-Then call `write_corpus_entry` with structured data:
+Then call `write_corpus_entry`:
 ```
-write_corpus_entry(ticket, "gap", {
-  screens:                 ["Dashboard", "Create"],   ← screen names from handoff
-  components_tried:        ["BsButton", "BsInput"],   ← what was attempted
-  suggested_pattern_name:  "ServiceRequest",          ← PascalCase name for missing pattern
-  rejection_reasons:       ["wrong layout", "missing star rating component"]  ← from feedback_notes
-})
+write_corpus_entry(
+  ticket: session_id,
+  type: "gap",
+  data: {
+    intent:                 "<what the user asked for>",
+    screens:                ["DataTable"],
+    components_tried:       ["BsTable", "BsInput"],
+    suggested_pattern_name: "FilterableDataTable",
+    rejection_reasons:      ["wrong layout", "missing pagination"]
+  }
+)
 ```
 
-After writing the gap entry, print:
-```
-Gap recorded: corpus/gaps/<ticket>.md
-Next step: create Patterns/<PatternName>/meta.json to add the missing pattern, then re-run the pipeline.
-```
-
-Then proceed to **Step 4 — Corpus Learning** *(skill: pocket-3/4-corpus-learning)*
+Then proceed to **Step 4 — Corpus Learning**.
 
 ## Rules
 - Never auto-accept. Always ask the user.
-- Never skip `write_corpus_entry` on accept — the feedback loop depends on it.
-- Never skip `write_corpus_entry` on gap_detected — that's what grows the corpus.
-- Always include `retrieved_node_ids` in save_handoff — it connects outcomes to graph nodes.
-- write_corpus_entry uses structured fields only — no prose summary.
-- Carry `feedback_note` forward: if the user rejects again, include all previous notes in the next attempt's context.
+- Never skip `write_corpus_entry` on accept or gap_detected.
+- Always include `retrieved_node_ids` in save_handoff.
+- `ticket` field in write_corpus_entry uses the Jira key if one exists, otherwise session_id.
+- Carry all previous `feedback_note` values forward into the next attempt's context.
+- Intent is always required in write_corpus_entry data — this is what makes learnings ticket-agnostic.
