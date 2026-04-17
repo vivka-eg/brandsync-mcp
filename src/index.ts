@@ -37,15 +37,24 @@ POCKET 3 PIPELINE — run these steps in order:
 
 ## Step 1 — Framework Detection & Token Setup
 
-a) Read package.json in the target project (NOT BrandSync MCP). Check dependencies for: react/react-dom → React | vue → Vue | @angular/core → Angular | none → ask user.
+a) Read package.json in the target project (NOT BrandSync MCP). Check dependencies for: react/react-dom → React | vue → Vue | @angular/core → Angular | none → check for MudBlazor (see c).
 
 b) Check if brandsync-tokens is in package.json. If not: run \`npm install brandsync-tokens\`, then import the CSS into the project entry point:
    - React: src/index.tsx → \`import 'brandsync-tokens/dist/css/tokens.css'\`
    - Vue: src/main.ts → same import
    - Angular: angular.json styles array → \`"node_modules/brandsync-tokens/dist/css/tokens.css"\`
    - HTML: <link> in <head>
+   - MudBlazor: <link> to wwwroot/css/tokens.css in App.razor or _Host.cshtml
 
-Rules: Never hardcode hex values or pixel sizes. Use var(--bs-*) for all styling.
+c) MudBlazor detection (run if no package.json found OR if checking a .NET project):
+   - Glob for *.csproj in the target project
+   - If found: grep for "MudBlazor" in the .csproj file
+   - If MudBlazor found → framework = "MudBlazor"
+   - Then check if the /mudblazor-fix skill is available (check ~/.claude/skills/mudblazor-fix.md exists)
+     → If skill missing: tell the user "Run \`npm install -g brandsync-agentic-skills\` to install BrandSync framework skills, then retry."
+     → If skill present: note that /mudblazor-fix will run automatically after code generation in Step 2
+
+Rules: Never hardcode hex values or pixel sizes. Use var(--bs-*) for all styling. For MudBlazor, always run /mudblazor-fix after generating any Razor or CSS files.
 
 ## Step 2 — Screen to Code
 
@@ -71,7 +80,7 @@ f) ALWAYS run a guidelines check after writing code — for every individual Bra
    If a guideline cannot be satisfied without changing the approach, note it briefly when presenting the code.
    This step is not optional. The graph is too coarse for production-level component guideline compliance.
 
-Rules: Query graph first always. Save retrieved_node_ids immediately. Read project before writing code. Never hardcode values. Always run search_guidelines before showing output.
+Rules: Query graph first always. Save retrieved_node_ids immediately. Read project before writing code. Never hardcode values. Always run search_guidelines before showing output. If framework is MudBlazor: after writing all Razor and CSS files, invoke /mudblazor-fix before proceeding to Step 3.
 
 ## Step 3 — Approval Check
 
